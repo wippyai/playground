@@ -1,0 +1,281 @@
+version: "1.0"
+namespace: app.test.pg
+
+entries:
+  # --- test cases ---
+
+  - name: join_leave
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "join and leave a group"
+      order: 1
+    source: file://join_leave.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: multi_join
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "multi-join same group (PID appears multiple times)"
+      order: 2
+    source: file://multi_join.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: which_groups
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "which_groups lists all active groups"
+      order: 3
+    source: file://which_groups.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: members
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "get_members and get_local_members"
+      order: 4
+    source: file://members.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: broadcast
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "broadcast delivers to all group members"
+      order: 5
+    source: file://broadcast.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
+  - name: broadcast_local
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "broadcast_local delivers to local members only"
+      order: 6
+    source: file://broadcast_local.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
+  - name: auto_cleanup
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "process exit auto-removes from groups"
+      order: 7
+    source: file://auto_cleanup.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
+  # --- new Erlang PG compliance tests ---
+
+  - name: join_multiple_groups
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "single process joins multiple different groups"
+      order: 8
+    source: file://join_multiple_groups.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: leave_reduces_count
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "multi-join reference counting (each leave removes exactly one)"
+      order: 9
+    source: file://leave_reduces_count.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: broadcast_empty_group
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "broadcast to empty/non-existent group succeeds"
+      order: 10
+    source: file://broadcast_empty_group.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: which_groups_dynamic
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "groups appear on first join, disappear when fully left"
+      order: 11
+    source: file://which_groups_dynamic.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: auto_cleanup_multi_group
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "process exit auto-removes from ALL joined groups"
+      order: 12
+    source: file://auto_cleanup_multi_group.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
+  - name: broadcast_multi_join
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "N joins = N broadcast deliveries (Erlang PG semantic)"
+      order: 13
+    source: file://broadcast_multi_join.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
+  - name: multi_process_membership
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "multiple processes in group, one leaves, others remain"
+      order: 14
+    source: file://multi_process_membership.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
+  # --- worker processes ---
+
+  - name: broadcast_worker
+    kind: process.lua
+    meta:
+      description: Worker that joins a group and listens for broadcast messages
+    source: file://broadcast_worker.lua
+    method: main
+    modules:
+      - pg
+      - process
+      - channel
+      - time
+
+  - name: cleanup_worker
+    kind: process.lua
+    meta:
+      description: Worker that joins a group then exits
+    source: file://cleanup_worker.lua
+    method: main
+    modules:
+      - pg
+      - process
+      - time
+
+  - name: multi_group_worker
+    kind: process.lua
+    meta:
+      description: Worker that joins multiple groups then exits
+    source: file://multi_group_worker.lua
+    method: main
+    modules:
+      - pg
+      - process
+      - time
+
+  - name: multi_join_broadcast_worker
+    kind: process.lua
+    meta:
+      description: Worker that joins a group N times and counts broadcast messages
+    source: file://multi_join_broadcast_worker.lua
+    method: main
+    modules:
+      - pg
+      - process
+      - channel
+      - time
+
+  - name: membership_worker
+    kind: process.lua
+    meta:
+      description: Worker that joins a group, waits for commands, optionally leaves
+    source: file://membership_worker.lua
+    method: main
+    modules:
+      - pg
+      - process
+      - channel
+      - time

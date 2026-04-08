@@ -1,0 +1,34 @@
+version: "1.0"
+namespace: app
+
+entries:
+  # app:terminal - terminal host for CLI commands
+  - name: terminal
+    kind: terminal.host
+    hide_logs: false
+    lifecycle:
+      auto_start: true
+
+  # app:processes - process host for spawning workers
+  - name: processes
+    kind: process.host
+    host:
+      max_processes: 100
+      workers: 8
+    lifecycle:
+      auto_start: true
+
+  # app:test_runner - runs all pg tests
+  - name: test_runner
+    kind: process.lua
+    meta:
+      command:
+        name: test
+        short: Run pg checklist tests
+    source: file://runner.lua
+    method: main
+    modules:
+      - io
+      - registry
+      - funcs
+      - time
