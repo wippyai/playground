@@ -220,6 +220,103 @@ entries:
       - time
       - channel
 
+  # --- pg.events() tests ---
+
+  - name: events_basic
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "pg.events() receives member.joined on self-join"
+      order: 15
+    source: file://events_basic.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - time
+      - channel
+
+  - name: events_leave
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "pg.events() receives member.left on leave"
+      order: 16
+    source: file://events_leave.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - time
+      - channel
+
+  - name: events_multi_group
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "pg.events() receives events for multiple groups"
+      order: 17
+    source: file://events_multi_group.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - time
+      - channel
+
+  - name: events_close
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "pg.events() subscription close is idempotent"
+      order: 18
+    source: file://events_close.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: events_join_leave_sequence
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "pg.events() receives correct join/leave event sequence"
+      order: 19
+    source: file://events_join_leave_sequence.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - time
+      - channel
+
+  - name: events_worker_exit
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "pg.events() receives events when worker joins then exits"
+      order: 20
+    source: file://events_worker_exit.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
   # --- worker processes ---
 
   - name: broadcast_worker
@@ -279,3 +376,264 @@ entries:
       - process
       - channel
       - time
+
+  - name: events_worker
+    kind: process.lua
+    meta:
+      description: Worker that joins a group and exits (for events tests)
+    source: file://events_worker.lua
+    method: main
+    modules:
+      - pg
+      - process
+      - time
+
+  - name: broadcast_payload_worker
+    kind: process.lua
+    meta:
+      description: Worker that joins a group, listens for a broadcast, reports payload back
+    source: file://broadcast_payload_worker.lua
+    method: main
+    modules:
+      - pg
+      - process
+      - channel
+      - time
+
+  - name: multi_join_cleanup_worker
+    kind: process.lua
+    meta:
+      description: Worker that joins a group N times then exits
+    source: file://multi_join_cleanup_worker.lua
+    method: main
+    modules:
+      - pg
+      - process
+      - time
+
+  # --- additional Erlang PG compliance tests ---
+
+  - name: broadcast_self
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "broadcast to self — broadcaster receives own message"
+      order: 21
+    source: file://broadcast_self.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
+  - name: broadcast_multi_payload
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "broadcast with multiple payload arguments"
+      order: 22
+    source: file://broadcast_multi_payload.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
+  - name: broadcast_no_payload
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "broadcast with no extra payload data"
+      order: 23
+    source: file://broadcast_no_payload.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
+  - name: empty_group_name
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "empty group name returns errors"
+      order: 24
+    source: file://empty_group_name.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: empty_topic
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "empty topic for broadcast returns errors"
+      order: 25
+    source: file://empty_topic.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: get_local_members_multi_process
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "get_local_members returns all local processes"
+      order: 26
+    source: file://get_local_members_multi_process.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
+  - name: get_local_members_multi_join
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "get_local_members shows duplicates for multi-join"
+      order: 27
+    source: file://get_local_members_multi_join.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: auto_cleanup_multi_join
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "multi-join process exit removes all N entries"
+      order: 28
+    source: file://auto_cleanup_multi_join.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
+  - name: events_verify_pids
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "pg.events() data.PIDs contains correct PID"
+      order: 29
+    source: file://events_verify_pids.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - time
+      - channel
+
+  - name: events_multiple_subscribers
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "two concurrent pg.events() subscriptions both receive events"
+      order: 30
+    source: file://events_multiple_subscribers.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - time
+      - channel
+
+  - name: events_from_other_process
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "pg.events() receives events from spawned worker"
+      order: 31
+    source: file://events_from_other_process.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
+  - name: join_leave_rejoin
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "join, leave, verify empty, rejoin works"
+      order: 32
+    source: file://join_leave_rejoin.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+
+  - name: which_groups_isolation
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "which_groups sees groups from all processes"
+      order: 33
+    source: file://which_groups_isolation.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
+  - name: concurrent_membership
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "concurrent join/leave from multiple workers"
+      order: 34
+    source: file://concurrent_membership.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
