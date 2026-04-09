@@ -830,3 +830,185 @@ entries:
       - pg
       - time
       - channel
+
+  # --- scope, monitor, and edge-case coverage tests ---
+
+  - name: scope_broadcast
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "scope broadcast/broadcast_local to scoped groups"
+      order: 48
+    source: file://scope_broadcast.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
+  - name: scope_batch_join_leave
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "scope batch join/leave with prefix verification"
+      order: 49
+    source: file://scope_batch_join_leave.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: scope_events
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "scope events filtering (snapshot + events only show scoped groups)"
+      order: 50
+    source: file://scope_events.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - time
+      - channel
+
+  - name: scope_monitor
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "scope monitor receives events for scoped group only"
+      order: 51
+    source: file://scope_monitor.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - time
+      - channel
+
+  - name: scope_get_local_members
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "scope get_local_members returns scoped members"
+      order: 52
+    source: file://scope_get_local_members.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: monitor_snapshot
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "pg.monitor() returns non-empty initial snapshot"
+      order: 53
+    source: file://monitor_snapshot.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: monitor_other_process
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "pg.monitor() receives events from another process"
+      order: 54
+    source: file://monitor_other_process.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
+  - name: get_members_nonexistent
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "get_members/get_local_members for non-existent group returns empty"
+      order: 55
+    source: file://get_members_nonexistent.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: leave_not_joined
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "single leave for non-joined group returns error"
+      order: 56
+    source: file://leave_not_joined.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: broadcast_local_empty_group
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "broadcast_local to empty group succeeds"
+      order: 57
+    source: file://broadcast_local_empty_group.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: events_batch_join
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "pg.events() receives events for batch join operations"
+      order: 58
+    source: file://events_batch_join.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - time
+      - channel
+
+  - name: scope_empty_name
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "pg.scope('') returns error"
+      order: 59
+    source: file://scope_empty_name.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
