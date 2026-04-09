@@ -680,13 +680,41 @@ entries:
     modules:
       - pg
 
+  - name: batch_leave_partial
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "batch leave with partial membership (best-effort semantics)"
+      order: 38
+    source: file://batch_leave_partial.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: batch_leave_not_joined
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "batch leave when not in any group returns error"
+      order: 39
+    source: file://batch_leave_not_joined.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
   - name: scope_basic
     kind: function.lua
     meta:
       type: test
       suite: pg
       description: "pg.scope() basic join/members/which_groups"
-      order: 38
+      order: 40
     source: file://scope_basic.lua
     method: main
     imports:
@@ -700,7 +728,7 @@ entries:
       type: test
       suite: pg
       description: "pg.scope() two scopes with same group name don't interfere"
-      order: 39
+      order: 41
     source: file://scope_isolation.lua
     method: main
     imports:
@@ -714,7 +742,7 @@ entries:
       type: test
       suite: pg
       description: "pg.monitor() receives join and leave events for a specific group"
-      order: 40
+      order: 42
     source: file://monitor_basic.lua
     method: main
     imports:
@@ -730,7 +758,7 @@ entries:
       type: test
       suite: pg
       description: "pg.monitor() only receives events for the monitored group"
-      order: 41
+      order: 43
     source: file://monitor_filter.lua
     method: main
     imports:
@@ -746,7 +774,7 @@ entries:
       type: test
       suite: pg
       description: "pg.events() returns snapshot of current groups"
-      order: 42
+      order: 44
     source: file://events_snapshot.lua
     method: main
     imports:
@@ -760,7 +788,7 @@ entries:
       type: test
       suite: pg
       description: "sub:close({flush=true}) drains buffered events"
-      order: 43
+      order: 45
     source: file://close_with_flush.lua
     method: main
     imports:
