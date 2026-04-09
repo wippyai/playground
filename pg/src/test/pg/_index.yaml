@@ -797,3 +797,36 @@ entries:
       - pg
       - time
       - channel
+
+  - name: multi_join_exit_events
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "multi-join process exit leave event has correct PID multiplicity"
+      order: 46
+    source: file://multi_join_exit_events.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
+  - name: demonitor_no_events_after
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "after sub:close(), no more events are received"
+      order: 47
+    source: file://demonitor_no_events_after.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - time
+      - channel
