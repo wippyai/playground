@@ -4,7 +4,7 @@ local pg = require("pg")
 
 local function main()
     -- subscribe to pg events
-    local sub, err = pg.events()
+    local sub, groups, err = pg.events()
     assert.no_error(sub, err, "pg.events should succeed")
 
     -- get channel to verify it works

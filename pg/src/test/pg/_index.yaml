@@ -637,3 +637,135 @@ entries:
       - process
       - time
       - channel
+
+  - name: which_local_groups
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "which_local_groups returns groups with local members"
+      order: 35
+    source: file://which_local_groups.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: batch_join
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "pg.join() with a table of groups (batch join)"
+      order: 36
+    source: file://batch_join.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: batch_leave
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "pg.leave() with a table of groups (batch leave)"
+      order: 37
+    source: file://batch_leave.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: scope_basic
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "pg.scope() basic join/members/which_groups"
+      order: 38
+    source: file://scope_basic.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: scope_isolation
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "pg.scope() two scopes with same group name don't interfere"
+      order: 39
+    source: file://scope_isolation.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: monitor_basic
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "pg.monitor() receives join and leave events for a specific group"
+      order: 40
+    source: file://monitor_basic.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - time
+      - channel
+
+  - name: monitor_filter
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "pg.monitor() only receives events for the monitored group"
+      order: 41
+    source: file://monitor_filter.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - time
+      - channel
+
+  - name: events_snapshot
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "pg.events() returns snapshot of current groups"
+      order: 42
+    source: file://events_snapshot.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: close_with_flush
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "sub:close({flush=true}) drains buffered events"
+      order: 43
+    source: file://close_with_flush.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - time
+      - channel

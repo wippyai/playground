@@ -7,7 +7,7 @@ local function main()
     local group = "test.events_worker_exit"
 
     -- subscribe to pg events BEFORE spawning the worker
-    local sub, err = pg.events()
+    local sub, groups, err = pg.events()
     assert.no_error(sub, err, "pg.events should succeed")
 
     local ch = sub:channel()

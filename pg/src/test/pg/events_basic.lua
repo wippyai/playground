@@ -7,7 +7,7 @@ local function main()
     local group = "test.events_basic"
 
     -- subscribe to pg events
-    local sub, err = pg.events()
+    local sub, groups, err = pg.events()
     assert.no_error(sub, err, "pg.events should succeed")
     assert.not_nil(sub, "subscription should not be nil")
 

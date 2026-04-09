@@ -7,7 +7,7 @@ local function main()
     local group = "test.events_sequence"
 
     -- subscribe to pg events
-    local sub, err = pg.events()
+    local sub, groups, err = pg.events()
     assert.no_error(sub, err, "pg.events should succeed")
 
     local ch = sub:channel()

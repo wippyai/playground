@@ -8,11 +8,11 @@ local function main()
     local group = "test.events_multi_sub"
 
     -- create two subscriptions
-    local sub1, err1 = pg.events()
+    local sub1, groups1, err1 = pg.events()
     assert.no_error(sub1, err1, "first pg.events should succeed")
     local ch1 = sub1:channel()
 
-    local sub2, err2 = pg.events()
+    local sub2, groups2, err2 = pg.events()
     assert.no_error(sub2, err2, "second pg.events should succeed")
     local ch2 = sub2:channel()
 
