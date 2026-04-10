@@ -1012,3 +1012,334 @@ entries:
       assert: app.lib:assert
     modules:
       - pg
+
+  # --- batch 3: extended coverage tests ---
+
+  - name: join_idempotent_membership
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "double-join creates 2 entries, each leave removes one"
+      order: 60
+    source: file://join_idempotent_membership.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: leave_order_independence
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "groups can be left in any order regardless of join order"
+      order: 61
+    source: file://leave_order_independence.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: which_groups_empty_after_all_leave
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "which_groups omits groups after all members leave"
+      order: 62
+    source: file://which_groups_empty_after_all_leave.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: get_members_returns_pids
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "get_members returns a table of non-empty PID strings"
+      order: 63
+    source: file://get_members_returns_pids.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: broadcast_local_self
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "broadcast_local delivers to self when self is a member"
+      order: 64
+    source: file://broadcast_local_self.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
+  - name: broadcast_topic_isolation
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "broadcast to topic A does not deliver to topic B listeners"
+      order: 65
+    source: file://broadcast_topic_isolation.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
+  - name: monitor_demonitor_rejoin
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "close monitor then re-subscribe; new sub receives events"
+      order: 66
+    source: file://monitor_demonitor_rejoin.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - time
+      - channel
+
+  - name: events_snapshot_accuracy
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "pg.events() snapshot reflects groups joined before subscribing"
+      order: 67
+    source: file://events_snapshot_accuracy.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: scope_multi_scope_same_process
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "3 scopes in same process maintain independent membership"
+      order: 68
+    source: file://scope_multi_scope_same_process.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: batch_join_verify_members
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "batch join 3 groups, verify each has 1 member"
+      order: 69
+    source: file://batch_join_verify_members.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: batch_join_leave_roundtrip
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "batch join/leave 4 groups with which_groups verification"
+      order: 70
+    source: file://batch_join_leave_roundtrip.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: multi_join_get_local_members
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "3x join same group; get_local_members returns 3 entries"
+      order: 71
+    source: file://multi_join_get_local_members.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: monitor_no_cross_group
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "monitor group A receives no events when joining group B"
+      order: 72
+    source: file://monitor_no_cross_group.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - time
+      - channel
+
+  - name: events_multi_subscriber_isolation
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "closing one events subscriber does not affect another"
+      order: 73
+    source: file://events_multi_subscriber_isolation.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - time
+      - channel
+
+  - name: broadcast_multiple_workers
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "broadcast delivers to 3 spawned workers in same group"
+      order: 74
+    source: file://broadcast_multiple_workers.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
+  - name: scope_events_snapshot_filtered
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "scoped events snapshot only contains scoped groups"
+      order: 75
+    source: file://scope_events_snapshot_filtered.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: join_leave_rapid_cycle
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "rapidly join/leave a group 10 times verifying counts"
+      order: 76
+    source: file://join_leave_rapid_cycle.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: which_groups_multi_group_join
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "which_groups returns all 5 joined groups, none after leaving"
+      order: 77
+    source: file://which_groups_multi_group_join.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: auto_cleanup_with_events
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "spawned worker join/exit emits join and leave events"
+      order: 78
+    source: file://auto_cleanup_with_events.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
+  - name: broadcast_local_multi_worker
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "broadcast_local delivers to 2 local workers"
+      order: 79
+    source: file://broadcast_local_multi_worker.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
+  - name: scope_leave_global_verify
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "scoped join visible globally with prefix; scoped leave removes it"
+      order: 80
+    source: file://scope_leave_global_verify.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: join_leave_interleaved
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "interleaved join/leave across 3 groups verifies correct counts"
+      order: 81
+    source: file://join_leave_interleaved.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg

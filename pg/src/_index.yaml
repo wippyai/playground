@@ -18,6 +18,12 @@ entries:
     lifecycle:
       auto_start: true
 
+  # app:pg - default process group scope
+  - name: pg
+    kind: pg.scope
+    lifecycle:
+      auto_start: true
+
   # app:test_runner - runs all pg tests
   - name: test_runner
     kind: process.lua
