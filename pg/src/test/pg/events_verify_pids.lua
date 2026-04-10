@@ -1,7 +1,8 @@
--- Test: pg.events() event data.PIDs contains the correct PID value
+-- Test: scope:events() event data.PIDs contains the correct PID value
 -- Verifies that the PIDs field in membership events matches the actual process PID.
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
@@ -9,13 +10,13 @@ local function main()
     local my_pid = process.pid()
 
     -- subscribe to pg events
-    local sub, groups, err = pg.events()
+    local sub, groups, err = scope:events()
     assert.no_error(sub, err, "pg.events should succeed")
 
     local ch = sub:channel()
 
     -- join a group
-    local ok, err2 = pg.join(group)
+    local ok, err2 = scope:join(group)
     assert.no_error(ok, err2, "pg.join should succeed")
 
     -- receive the join event
@@ -34,7 +35,7 @@ local function main()
     assert.eq(evt.data.PIDs[1], my_pid, "PIDs[1] should match our process PID")
 
     -- leave the group
-    pg.leave(group)
+    scope:leave(group)
 
     -- receive the leave event
     timeout = time.after("3s")

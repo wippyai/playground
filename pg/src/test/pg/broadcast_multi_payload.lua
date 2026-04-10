@@ -2,6 +2,7 @@
 -- The Go implementation supports collecting all args from position 3 onward.
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
@@ -35,7 +36,7 @@ local function main()
     time.sleep("100ms")
 
     -- broadcast with multiple payload args
-    local ok, berr = pg.broadcast(group, "pg.multi.payload", "arg1", "arg2", "arg3")
+    local ok, berr = scope:broadcast(group, "pg.multi.payload", "arg1", "arg2", "arg3")
     assert.no_error(ok, berr, "broadcast with multiple payloads should succeed")
 
     -- wait for confirmation

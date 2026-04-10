@@ -1,6 +1,7 @@
--- Test: pg.events() returns a snapshot of current groups atomically
+-- Test: scope:events() returns a snapshot of current groups atomically
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 
 local function main()
     local group_a = "test.events_snap.a"
@@ -8,13 +9,13 @@ local function main()
 
     -- join two groups BEFORE subscribing
     local ok, err
-    ok, err = pg.join(group_a)
+    ok, err = scope:join(group_a)
     assert.no_error(ok, err, "join group_a")
-    ok, err = pg.join(group_b)
+    ok, err = scope:join(group_b)
     assert.no_error(ok, err, "join group_b")
 
     -- subscribe to events - should receive snapshot of current groups
-    local sub, groups, serr = pg.events()
+    local sub, groups, serr = scope:events()
     assert.no_error(sub, serr, "pg.events should succeed")
     assert.not_nil(sub, "subscription should not be nil")
     assert.is_table(groups, "groups snapshot should be a table")
@@ -30,8 +31,8 @@ local function main()
 
     -- cleanup
     sub:close()
-    pg.leave(group_a)
-    pg.leave(group_b)
+    scope:leave(group_a)
+    scope:leave(group_b)
 end
 
 return { main = main }

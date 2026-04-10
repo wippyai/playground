@@ -713,7 +713,7 @@ entries:
     meta:
       type: test
       suite: pg
-      description: "pg.scope() basic join/members/which_groups"
+      description: "pg.open() basic functionality - join, members, which_groups within an instance"
       order: 40
     source: file://scope_basic.lua
     method: main
@@ -727,7 +727,7 @@ entries:
     meta:
       type: test
       suite: pg
-      description: "pg.scope() two scopes with same group name don't interfere"
+      description: "pg.open() isolation - two instances with same group name don't interfere"
       order: 41
     source: file://scope_isolation.lua
     method: main
@@ -838,7 +838,7 @@ entries:
     meta:
       type: test
       suite: pg
-      description: "scope broadcast/broadcast_local to scoped groups"
+      description: "instance broadcast/broadcast_local to instance groups"
       order: 48
     source: file://scope_broadcast.lua
     method: main
@@ -855,7 +855,7 @@ entries:
     meta:
       type: test
       suite: pg
-      description: "scope batch join/leave with prefix verification"
+      description: "instance batch join/leave with prefix verification"
       order: 49
     source: file://scope_batch_join_leave.lua
     method: main
@@ -869,7 +869,7 @@ entries:
     meta:
       type: test
       suite: pg
-      description: "scope events filtering (snapshot + events only show scoped groups)"
+      description: "instance events filtering (snapshot + events only show instance groups)"
       order: 50
     source: file://scope_events.lua
     method: main
@@ -885,7 +885,7 @@ entries:
     meta:
       type: test
       suite: pg
-      description: "scope monitor receives events for scoped group only"
+      description: "instance monitor receives events for instance group only"
       order: 51
     source: file://scope_monitor.lua
     method: main
@@ -901,7 +901,7 @@ entries:
     meta:
       type: test
       suite: pg
-      description: "scope get_local_members returns scoped members"
+      description: "instance get_local_members returns instance members"
       order: 52
     source: file://scope_get_local_members.lua
     method: main
@@ -1004,7 +1004,7 @@ entries:
     meta:
       type: test
       suite: pg
-      description: "pg.scope('') returns error"
+      description: "pg.open() with empty name returns error"
       order: 59
     source: file://scope_empty_name.lua
     method: main
@@ -1140,7 +1140,7 @@ entries:
     meta:
       type: test
       suite: pg
-      description: "3 scopes in same process maintain independent membership"
+      description: "pg.open() multi-instance - 3 instances maintain independent membership"
       order: 68
     source: file://scope_multi_scope_same_process.lua
     method: main
@@ -1245,7 +1245,7 @@ entries:
     meta:
       type: test
       suite: pg
-      description: "scoped events snapshot only contains scoped groups"
+      description: "instance events snapshot only contains instance groups"
       order: 75
     source: file://scope_events_snapshot_filtered.lua
     method: main
@@ -1321,7 +1321,7 @@ entries:
     meta:
       type: test
       suite: pg
-      description: "scoped join visible globally with prefix; scoped leave removes it"
+      description: "cross-instance isolation - join on one instance not visible on another"
       order: 80
     source: file://scope_leave_global_verify.lua
     method: main

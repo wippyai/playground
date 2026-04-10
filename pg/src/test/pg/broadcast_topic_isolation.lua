@@ -1,13 +1,14 @@
 -- Test: broadcast to one topic does not deliver to listeners of another topic
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
     local group = "test.bcast_topic_iso"
 
     -- join the group
-    local ok, err = pg.join(group)
+    local ok, err = scope:join(group)
     assert.no_error(ok, err, "pg.join should succeed")
 
     -- listen for two different topics
@@ -15,7 +16,7 @@ local function main()
     local ch_b = process.listen("topic.B", { message = true })
 
     -- broadcast only to topic.A
-    ok, err = pg.broadcast(group, "topic.A", "msg_a")
+    ok, err = scope:broadcast(group, "topic.A", "msg_a")
     assert.no_error(ok, err, "pg.broadcast to topic.A should succeed")
 
     -- topic.A should receive the message
@@ -42,7 +43,7 @@ local function main()
         "topic.B should NOT receive any message (got timeout as expected)")
 
     -- cleanup
-    pg.leave(group)
+    scope:leave(group)
 end
 
 return { main = main }

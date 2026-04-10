@@ -24,6 +24,18 @@ entries:
     lifecycle:
       auto_start: true
 
+  # app:pg_alt - alternative PG scope (for isolation tests)
+  - name: pg_alt
+    kind: pg.scope
+    lifecycle:
+      auto_start: true
+
+  # app:pg_alt2 - second alternative PG scope (for multi-scope tests)
+  - name: pg_alt2
+    kind: pg.scope
+    lifecycle:
+      auto_start: true
+
   # app:test_runner - runs all pg tests
   - name: test_runner
     kind: process.lua

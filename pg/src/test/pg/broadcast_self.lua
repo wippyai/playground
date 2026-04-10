@@ -2,20 +2,21 @@
 -- In Erlang PG, if the sending process is a member, it receives the broadcast too.
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
     local group = "test.broadcast_self"
 
     -- join the group ourselves
-    local ok, err = pg.join(group)
+    local ok, err = scope:join(group)
     assert.no_error(ok, err, "pg.join should succeed")
 
     -- listen for broadcast messages
     local bcast_ch = process.listen("pg.self.bcast", { message = true })
 
     -- broadcast a message to the group (we are a member)
-    ok, err = pg.broadcast(group, "pg.self.bcast", "hello from self")
+    ok, err = scope:broadcast(group, "pg.self.bcast", "hello from self")
     assert.no_error(ok, err, "pg.broadcast should succeed")
 
     -- we should receive our own broadcast
@@ -34,7 +35,7 @@ local function main()
     assert.eq(data, "hello from self", "payload data should match")
 
     -- cleanup
-    pg.leave(group)
+    scope:leave(group)
 end
 
 return { main = main }

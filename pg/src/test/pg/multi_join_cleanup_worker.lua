@@ -1,6 +1,7 @@
 -- Worker: joins a group N times then exits after a short delay.
 -- Used by auto_cleanup_multi_join test.
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
@@ -13,7 +14,7 @@ local function main()
 
     -- join the group N times
     for i = 1, join_count do
-        pg.join(group)
+        scope:join(group)
     end
 
     -- signal ready

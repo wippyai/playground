@@ -1,20 +1,21 @@
--- Test: pg.events() snapshot accurately reflects groups joined before subscribing
+-- Test: scope:events() snapshot accurately reflects groups joined before subscribing
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 
 local function main()
     local group_a = "test.evt_snap.a"
     local group_b = "test.evt_snap.b"
 
-    -- join two groups BEFORE calling pg.events()
+    -- join two groups BEFORE calling scope:events()
     local ok, err
-    ok, err = pg.join(group_a)
+    ok, err = scope:join(group_a)
     assert.no_error(ok, err, "join group_a")
-    ok, err = pg.join(group_b)
+    ok, err = scope:join(group_b)
     assert.no_error(ok, err, "join group_b")
 
-    -- call pg.events() - snapshot should contain both groups
-    local sub, snapshot, serr = pg.events()
+    -- call scope:events() - snapshot should contain both groups
+    local sub, snapshot, serr = scope:events()
     assert.no_error(sub, serr, "pg.events should succeed")
     assert.not_nil(sub, "subscription should not be nil")
     assert.is_table(snapshot, "snapshot should be a table")
@@ -31,8 +32,8 @@ local function main()
 
     -- cleanup
     sub:close()
-    pg.leave(group_a)
-    pg.leave(group_b)
+    scope:leave(group_a)
+    scope:leave(group_b)
 end
 
 return { main = main }

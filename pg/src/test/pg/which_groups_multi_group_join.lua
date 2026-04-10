@@ -1,6 +1,7 @@
 -- Test: which_groups returns all 5 joined groups, and none after leaving
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 
 local function main()
     local groups = {
@@ -13,12 +14,12 @@ local function main()
 
     -- join all 5 groups
     for i, g in ipairs(groups) do
-        local ok, err = pg.join(g)
+        local ok, err = scope:join(g)
         assert.no_error(ok, err, "join group " .. g)
     end
 
     -- which_groups should include all 5
-    local wg, err = pg.which_groups()
+    local wg, err = scope:which_groups()
     assert.no_error(wg, err, "which_groups should succeed")
     assert.is_table(wg, "which_groups should return a table")
     assert.gte(#wg, 5, "should have at least 5 groups")
@@ -34,12 +35,12 @@ local function main()
 
     -- leave all 5 groups
     for _, g in ipairs(groups) do
-        local ok, err2 = pg.leave(g)
+        local ok, err2 = scope:leave(g)
         assert.no_error(ok, err2, "leave group " .. g)
     end
 
     -- which_groups should no longer contain any of the 5
-    wg, err = pg.which_groups()
+    wg, err = scope:which_groups()
     assert.no_error(wg, err, "which_groups after leaves should succeed")
 
     found = {}

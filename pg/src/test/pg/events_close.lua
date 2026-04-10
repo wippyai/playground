@@ -1,10 +1,11 @@
--- Test: pg.events() subscription close is clean and idempotent
+-- Test: scope:events() subscription close is clean and idempotent
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 
 local function main()
     -- subscribe to pg events
-    local sub, groups, err = pg.events()
+    local sub, groups, err = scope:events()
     assert.no_error(sub, err, "pg.events should succeed")
 
     -- get channel to verify it works

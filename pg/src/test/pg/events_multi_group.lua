@@ -1,6 +1,7 @@
--- Test: pg.events() receives events for multiple groups
+-- Test: scope:events() receives events for multiple groups
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
@@ -8,14 +9,14 @@ local function main()
     local group_b = "test.events_multi.beta"
 
     -- subscribe to pg events
-    local sub, groups, err = pg.events()
+    local sub, groups, err = scope:events()
     assert.no_error(sub, err, "pg.events should succeed")
 
     local ch = sub:channel()
 
     -- join two different groups
-    pg.join(group_a)
-    pg.join(group_b)
+    scope:join(group_a)
+    scope:join(group_b)
 
     -- receive two join events
     local events_received = {}
@@ -38,8 +39,8 @@ local function main()
     assert.eq(events_received[2], group_b, "second group should be beta")
 
     -- cleanup
-    pg.leave(group_a)
-    pg.leave(group_b)
+    scope:leave(group_a)
+    scope:leave(group_b)
     sub:close()
 end
 

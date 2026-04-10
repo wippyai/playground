@@ -1,14 +1,15 @@
--- Test: pg.monitor() receives events from another process (cross-process)
+-- Test: scope:monitor() receives events from another process (cross-process)
 -- Monitor a group, spawn an events_worker that joins it, verify join/leave events.
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
     local group = "test.monitor_other_process"
 
     -- subscribe to monitor for this group
-    local sub, members, err = pg.monitor(group)
+    local sub, members, err = scope:monitor(group)
     assert.no_error(sub, err, "pg.monitor should succeed")
     assert.eq(#members, 0, "initial members should be empty")
 

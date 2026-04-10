@@ -1,20 +1,21 @@
 -- Test: sub:close({flush=true}) drains buffered events before closing
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
     local group = "test.close_flush"
 
     -- subscribe to events
-    local sub, groups, err = pg.events()
+    local sub, groups, err = scope:events()
     assert.no_error(sub, err, "pg.events should succeed")
 
     local ch = sub:channel()
 
     -- generate some events by joining multiple times
     for i = 1, 3 do
-        local ok, jerr = pg.join(group)
+        local ok, jerr = scope:join(group)
         assert.no_error(ok, jerr, "join #" .. i)
     end
 
@@ -37,9 +38,9 @@ local function main()
     assert.ok(true, "close with flush completed without hanging")
 
     -- cleanup remaining joins
-    pg.leave(group)
-    pg.leave(group)
-    pg.leave(group)
+    scope:leave(group)
+    scope:leave(group)
+    scope:leave(group)
 end
 
 return { main = main }

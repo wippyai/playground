@@ -1,20 +1,21 @@
 -- Test: broadcast_local delivers to self when self is a member
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
     local group = "test.bcast_local_self"
 
     -- join the group
-    local ok, err = pg.join(group)
+    local ok, err = scope:join(group)
     assert.no_error(ok, err, "pg.join should succeed")
 
     -- listen for the broadcast topic
     local bcast_ch = process.listen("pg.local.self", { message = true })
 
     -- broadcast_local to the group
-    ok, err = pg.broadcast_local(group, "pg.local.self", "local hello")
+    ok, err = scope:broadcast_local(group, "pg.local.self", "local hello")
     assert.no_error(ok, err, "pg.broadcast_local should succeed")
 
     -- we should receive the message
@@ -34,7 +35,7 @@ local function main()
     assert.eq(data, "local hello", "payload data should match")
 
     -- cleanup
-    pg.leave(group)
+    scope:leave(group)
 end
 
 return { main = main }

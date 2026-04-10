@@ -1,18 +1,19 @@
--- Test: pg.events() receives events for batch join operations
+-- Test: scope:events() receives events for batch join operations
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
     local groups = {"test.evt_batch.a", "test.evt_batch.b", "test.evt_batch.c"}
 
     -- subscribe to events first
-    local sub, snapshot, err = pg.events()
+    local sub, snapshot, err = scope:events()
     assert.no_error(sub, err, "pg.events should succeed")
     local ch = sub:channel()
 
     -- batch join 3 groups at once
-    local ok, err2 = pg.join(groups)
+    local ok, err2 = scope:join(groups)
     assert.no_error(ok, err2, "batch join should succeed")
 
     -- we should receive at least one member.joined event for each group
@@ -39,7 +40,7 @@ local function main()
     end
 
     -- cleanup: batch leave
-    pg.leave(groups)
+    scope:leave(groups)
 
     -- drain leave events
     for i = 1, #groups do

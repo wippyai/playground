@@ -1,6 +1,7 @@
 -- Test: process exit auto-removes from groups
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
@@ -29,7 +30,7 @@ local function main()
     assert.neq(result.channel, timeout, "worker should signal ready (not timeout)")
 
     -- verify the worker is in the group
-    local members, err2 = pg.get_members(group)
+    local members, err2 = scope:get_members(group)
     assert.no_error(members, err2, "get_members should succeed")
     assert.gte(#members, 1, "group should have at least 1 member while worker is alive")
 
@@ -46,7 +47,7 @@ local function main()
     time.sleep("300ms")
 
     -- verify the worker was auto-removed from the group
-    members, err2 = pg.get_members(group)
+    members, err2 = scope:get_members(group)
     assert.no_error(members, err2, "get_members after exit should succeed")
     assert.eq(#members, 0, "group should be empty after worker exited")
 end

@@ -1,6 +1,7 @@
 -- Worker: joins a group and listens for broadcast messages.
 -- Sends confirmation back to the parent when a message is received.
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
@@ -14,7 +15,7 @@ local function main()
     local parent_pid = setup_msg.parent_pid
 
     -- join the group
-    pg.join(group)
+    scope:join(group)
 
     -- signal to parent that we are ready
     process.send(parent_pid, "ready", true)
@@ -44,7 +45,7 @@ local function main()
     end
 
     -- leave and exit
-    pg.leave(group)
+    scope:leave(group)
 end
 
 return { main = main }

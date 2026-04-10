@@ -2,6 +2,7 @@
 -- Spawns 2 broadcast_worker processes, uses broadcast_local, both should receive.
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
@@ -52,7 +53,7 @@ local function main()
     time.sleep("200ms")
 
     -- broadcast_local to the group (both workers are local, so both should receive)
-    local ok, err = pg.broadcast_local(group, "pg.broadcast", "local msg")
+    local ok, err = scope:broadcast_local(group, "pg.broadcast", "local msg")
     assert.no_error(ok, err, "pg.broadcast_local should succeed")
 
     -- collect confirmations from both workers

@@ -3,23 +3,24 @@
 -- get_members and get_local_members.
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 
 local function main()
     local group = "test.local_members_multi_join"
 
     -- join the same group 4 times
     for i = 1, 4 do
-        local ok, err = pg.join(group)
+        local ok, err = scope:join(group)
         assert.no_error(ok, err, "pg.join #" .. i .. " should succeed")
     end
 
     -- get_members should show 4 entries (all same PID)
-    local members, err = pg.get_members(group)
+    local members, err = scope:get_members(group)
     assert.no_error(members, err, "get_members should succeed")
     assert.eq(#members, 4, "get_members should return 4 entries for 4 joins")
 
     -- get_local_members should also show 4 entries
-    local local_members, lerr = pg.get_local_members(group)
+    local local_members, lerr = scope:get_local_members(group)
     assert.no_error(local_members, lerr, "get_local_members should succeed")
     assert.eq(#local_members, 4, "get_local_members should return 4 entries for 4 joins")
 
@@ -32,7 +33,7 @@ local function main()
 
     -- cleanup
     for i = 1, 4 do
-        pg.leave(group)
+        scope:leave(group)
     end
 end
 

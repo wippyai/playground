@@ -2,6 +2,7 @@
 -- Multiple workers join the same group, some leave, verify final membership consistency.
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
@@ -43,7 +44,7 @@ local function main()
     end
 
     -- all 4 should be members
-    local members, merr = pg.get_members(group)
+    local members, merr = scope:get_members(group)
     assert.no_error(members, merr, "get_members should succeed")
     assert.eq(#members, 4, "should have 4 members initially")
 
@@ -65,7 +66,7 @@ local function main()
     time.sleep("100ms")
 
     -- should have 2 remaining members (workers 2 and 4)
-    members, merr = pg.get_members(group)
+    members, merr = scope:get_members(group)
     assert.no_error(members, merr, "get_members after leaves should succeed")
     assert.eq(#members, 2, "should have 2 members after 2 leaves")
 

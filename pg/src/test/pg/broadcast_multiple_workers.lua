@@ -2,6 +2,7 @@
 -- Spawns 3 broadcast_worker processes, broadcasts a message, collects all 3 confirmations.
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
@@ -52,7 +53,7 @@ local function main()
     time.sleep("200ms")
 
     -- broadcast a message to the group
-    local ok, err = pg.broadcast(group, "pg.broadcast", "hello")
+    local ok, err = scope:broadcast(group, "pg.broadcast", "hello")
     assert.no_error(ok, err, "pg.broadcast should succeed")
 
     -- collect confirmations from all 3 workers

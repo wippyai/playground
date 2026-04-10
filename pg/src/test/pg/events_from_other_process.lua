@@ -1,14 +1,15 @@
--- Test: pg.events() receives events for another process joining
+-- Test: scope:events() receives events for another process joining
 -- Subscribe, spawn a worker that joins a group, verify event includes worker PID.
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
     local group = "test.events_from_other"
 
     -- subscribe to pg events first
-    local sub, groups, err = pg.events()
+    local sub, groups, err = scope:events()
     assert.no_error(sub, err, "pg.events should succeed")
     local ch = sub:channel()
 

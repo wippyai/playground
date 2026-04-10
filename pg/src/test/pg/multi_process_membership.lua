@@ -2,6 +2,7 @@
 -- Erlang PG: leave only affects the specific process that called it
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
@@ -44,7 +45,7 @@ local function main()
     end
 
     -- verify all 3 are in the group
-    local members, err = pg.get_members(group)
+    local members, err = scope:get_members(group)
     assert.no_error(members, err, "get_members should succeed")
     assert.eq(#members, num_workers, "group should have " .. num_workers .. " members")
 
@@ -63,7 +64,7 @@ local function main()
     time.sleep("100ms")
 
     -- verify group now has 2 members (worker 1 and worker 3)
-    members, err = pg.get_members(group)
+    members, err = scope:get_members(group)
     assert.no_error(members, err, "get_members after leave")
     assert.eq(#members, num_workers - 1, "group should have " .. (num_workers - 1) .. " members after one leaves")
 

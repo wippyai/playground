@@ -1,20 +1,21 @@
--- Test: pg.monitor() returns non-empty initial snapshot when group has members
+-- Test: scope:monitor() returns non-empty initial snapshot when group has members
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 
 local function main()
     local group = "test.monitor_snapshot"
 
     -- join the group BEFORE subscribing to monitor
-    local ok, err = pg.join(group)
+    local ok, err = scope:join(group)
     assert.no_error(ok, err, "join should succeed")
 
     -- join a second time to verify snapshot shows multi-join
-    ok, err = pg.join(group)
+    ok, err = scope:join(group)
     assert.no_error(ok, err, "join #2 should succeed")
 
     -- now subscribe to monitor — snapshot should be non-empty
-    local sub, members, merr = pg.monitor(group)
+    local sub, members, merr = scope:monitor(group)
     assert.no_error(sub, merr, "pg.monitor should succeed")
     assert.not_nil(sub, "subscription should not be nil")
     assert.is_table(members, "members snapshot should be a table")
@@ -26,8 +27,8 @@ local function main()
 
     -- cleanup
     sub:close()
-    pg.leave(group)
-    pg.leave(group)
+    scope:leave(group)
+    scope:leave(group)
 end
 
 return { main = main }

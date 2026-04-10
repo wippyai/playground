@@ -1,6 +1,7 @@
 -- Test: broadcast_local delivers to local members only
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
@@ -37,7 +38,7 @@ local function main()
     time.sleep("200ms")
 
     -- broadcast_local to the group
-    local ok, err2 = pg.broadcast_local(group, "pg.broadcast", "local hello")
+    local ok, err2 = scope:broadcast_local(group, "pg.broadcast", "local hello")
     assert.no_error(ok, err2, "pg.broadcast_local should succeed")
 
     -- collect confirmation

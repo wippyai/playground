@@ -1,14 +1,11 @@
--- Test: scope broadcast and broadcast_local deliver to scoped group members
--- Reuses the existing broadcast_worker by passing the prefixed group name.
+-- Test: instance broadcast and broadcast_local deliver to group members
 local assert = require("assert")
 local pg = require("pg")
 local time = require("time")
 
 local function main()
-    local s = pg.scope("scope_bcast")
+    local s = pg.open("app:pg")
     local group = "test.scope_broadcast"
-    -- The worker will join the actual prefixed group name
-    local prefixed_group = "scope_bcast::" .. group
 
     -- set up listen channels BEFORE spawning workers
     local ready_ch = process.listen("ready")
@@ -22,9 +19,9 @@ local function main()
     )
     assert.no_error(pid, err, "spawn broadcast_worker")
 
-    -- send setup with prefixed group name so worker joins the scoped group
+    -- send setup with group name so worker joins the group
     process.send(pid, "setup", {
-        group = prefixed_group,
+        group = group,
         confirm_topic = confirm_topic,
         parent_pid = process.pid(),
     })
@@ -39,9 +36,9 @@ local function main()
 
     time.sleep("200ms")
 
-    -- use scoped broadcast (passes unprefixed group name)
-    local ok, err2 = s.broadcast(group, "pg.broadcast", "scoped hello")
-    assert.no_error(ok, err2, "scoped broadcast should succeed")
+    -- use instance broadcast
+    local ok, err2 = s:broadcast(group, "pg.broadcast", "scoped hello")
+    assert.no_error(ok, err2, "broadcast should succeed")
 
     -- collect confirmation
     timeout = time.after("3s")
@@ -50,7 +47,7 @@ local function main()
         timeout:case_receive(),
     }
     assert.neq(result.channel, timeout, "worker should confirm receipt")
-    assert.ok(result.value.received, "worker should have received scoped broadcast")
+    assert.ok(result.value.received, "worker should have received broadcast")
 
     -- wait for worker to exit
     time.sleep("500ms")
@@ -68,7 +65,7 @@ local function main()
     assert.no_error(pid2, err3, "spawn broadcast_worker for local")
 
     process.send(pid2, "setup", {
-        group = prefixed_group,
+        group = group,
         confirm_topic = confirm_topic2,
         parent_pid = process.pid(),
     })
@@ -84,9 +81,9 @@ local function main()
 
     time.sleep("200ms")
 
-    -- use scoped broadcast_local
-    ok, err2 = s.broadcast_local(group, "pg.broadcast", "scoped local hello")
-    assert.no_error(ok, err2, "scoped broadcast_local should succeed")
+    -- use instance broadcast_local
+    ok, err2 = s:broadcast_local(group, "pg.broadcast", "scoped local hello")
+    assert.no_error(ok, err2, "broadcast_local should succeed")
 
     -- collect confirmation
     timeout = time.after("3s")
@@ -95,7 +92,7 @@ local function main()
         timeout:case_receive(),
     }
     assert.neq(result.channel, timeout, "worker should confirm local broadcast receipt")
-    assert.ok(result.value.received, "worker should have received scoped broadcast_local")
+    assert.ok(result.value.received, "worker should have received broadcast_local")
 
     -- wait for worker to exit
     time.sleep("500ms")

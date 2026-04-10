@@ -3,6 +3,7 @@
 -- Broadcasting iterates over get_members, so each duplicate entry receives a message.
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
@@ -37,13 +38,13 @@ local function main()
     assert.neq(result.channel, timeout, "worker should signal ready")
 
     -- verify get_members shows N entries
-    local members, merr = pg.get_members(group)
+    local members, merr = scope:get_members(group)
     assert.no_error(members, merr, "get_members")
     assert.eq(#members, join_count, "get_members should show " .. join_count .. " entries for multi-joined worker")
 
     -- small delay then broadcast once
     time.sleep("100ms")
-    local ok, berr = pg.broadcast(group, "pg.multi.bcast", "single message")
+    local ok, berr = scope:broadcast(group, "pg.multi.bcast", "single message")
     assert.no_error(ok, berr, "broadcast should succeed")
 
     -- wait for worker to report result

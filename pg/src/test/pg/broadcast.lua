@@ -1,6 +1,7 @@
 -- Test: broadcast delivers to all group members
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
@@ -51,7 +52,7 @@ local function main()
     time.sleep("200ms")
 
     -- broadcast a message to the group
-    local ok, err = pg.broadcast(group, "pg.broadcast", "hello from test")
+    local ok, err = scope:broadcast(group, "pg.broadcast", "hello from test")
     assert.no_error(ok, err, "pg.broadcast should succeed")
 
     -- collect confirmations from workers

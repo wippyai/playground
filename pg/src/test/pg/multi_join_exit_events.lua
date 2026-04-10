@@ -3,6 +3,7 @@
 -- should contain the worker PID 3 times (matching Erlang PG semantics).
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
@@ -10,7 +11,7 @@ local function main()
     local join_count = 3
 
     -- subscribe to pg events BEFORE spawning the worker
-    local sub, groups, err = pg.events()
+    local sub, groups, err = scope:events()
     assert.no_error(sub, err, "pg.events should succeed")
 
     local ch = sub:channel()

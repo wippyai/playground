@@ -2,6 +2,7 @@
 -- Reports the count back to the parent. Tests Erlang PG semantics where
 -- N joins = N entries in get_members = N broadcast deliveries.
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
@@ -14,7 +15,7 @@ local function main()
 
     -- join the group N times
     for i = 1, join_count do
-        pg.join(group)
+        scope:join(group)
     end
 
     -- signal ready
@@ -48,7 +49,7 @@ local function main()
 
     -- leave all
     for i = 1, join_count do
-        pg.leave(group)
+        scope:leave(group)
     end
 end
 

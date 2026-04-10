@@ -2,6 +2,7 @@
 -- Spawns workers that join different groups, verifies which_groups sees them all.
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
@@ -48,11 +49,11 @@ local function main()
     end
 
     -- our own process joins group_c
-    local ok, jerr = pg.join(group_c)
+    local ok, jerr = scope:join(group_c)
     assert.no_error(ok, jerr, "main join group_c should succeed")
 
     -- which_groups should list all three groups
-    local groups, gerr = pg.which_groups()
+    local groups, gerr = scope:which_groups()
     assert.no_error(groups, gerr, "which_groups should succeed")
 
     local found_a, found_b, found_c = false, false, false
@@ -68,7 +69,7 @@ local function main()
     -- cleanup: tell workers to exit, leave our group
     process.send(pid1, "command", "exit")
     process.send(pid2, "command", "exit")
-    pg.leave(group_c)
+    scope:leave(group_c)
     time.sleep("500ms")
 end
 

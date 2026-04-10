@@ -3,13 +3,14 @@
 -- and will receive events.
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
     local group = "test.mon_rejoin"
 
     -- first monitor subscription
-    local sub1, members1, err = pg.monitor(group)
+    local sub1, members1, err = scope:monitor(group)
     assert.no_error(sub1, err, "first pg.monitor should succeed")
     assert.eq(#members1, 0, "initial members should be empty")
 
@@ -17,7 +18,7 @@ local function main()
     sub1:close()
 
     -- create a second monitor subscription on the same group
-    local sub2, members2, err2 = pg.monitor(group)
+    local sub2, members2, err2 = scope:monitor(group)
     assert.no_error(sub2, err2, "second pg.monitor should succeed")
     assert.eq(#members2, 0, "members should still be empty")
 
@@ -25,7 +26,7 @@ local function main()
     assert.not_nil(ch, "channel should not be nil")
 
     -- join the group - second monitor should receive the event
-    local ok, jerr = pg.join(group)
+    local ok, jerr = scope:join(group)
     assert.no_error(ok, jerr, "pg.join should succeed")
 
     -- wait for join event on second subscription
@@ -42,7 +43,7 @@ local function main()
     assert.eq(evt.path, group, "event path should be the group name")
 
     -- cleanup
-    pg.leave(group)
+    scope:leave(group)
     sub2:close()
 end
 

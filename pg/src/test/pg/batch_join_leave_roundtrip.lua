@@ -1,16 +1,17 @@
 -- Test: batch join and leave roundtrip with which_groups verification
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 
 local function main()
     local groups = {"test.bjlr.w", "test.bjlr.x", "test.bjlr.y", "test.bjlr.z"}
 
     -- batch join all 4 groups
-    local ok, err = pg.join(groups)
+    local ok, err = scope:join(groups)
     assert.no_error(ok, err, "batch join should succeed")
 
     -- verify which_groups contains all 4
-    local all_groups, gerr = pg.which_groups()
+    local all_groups, gerr = scope:which_groups()
     assert.no_error(all_groups, gerr, "which_groups after join")
     local found = {}
     for _, g in ipairs(all_groups) do
@@ -21,11 +22,11 @@ local function main()
     end
 
     -- batch leave all 4 groups
-    ok, err = pg.leave(groups)
+    ok, err = scope:leave(groups)
     assert.no_error(ok, err, "batch leave should succeed")
 
     -- verify which_groups contains none of them
-    all_groups, gerr = pg.which_groups()
+    all_groups, gerr = scope:which_groups()
     assert.no_error(all_groups, gerr, "which_groups after leave")
     found = {}
     for _, g in ipairs(all_groups) do
@@ -37,7 +38,7 @@ local function main()
 
     -- verify get_members for each returns 0
     for _, group in ipairs(groups) do
-        local members, merr = pg.get_members(group)
+        local members, merr = scope:get_members(group)
         assert.no_error(members, merr, "get_members after leave for " .. group)
         assert.eq(#members, 0, group .. " should have 0 members after leave")
     end

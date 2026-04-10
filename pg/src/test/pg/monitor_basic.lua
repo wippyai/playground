@@ -1,13 +1,14 @@
--- Test: pg.monitor() receives join and leave events for a specific group
+-- Test: scope:monitor() receives join and leave events for a specific group
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
     local group = "test.monitor_basic"
 
     -- subscribe to monitor for this group
-    local sub, members, err = pg.monitor(group)
+    local sub, members, err = scope:monitor(group)
     assert.no_error(sub, err, "pg.monitor should succeed")
     assert.not_nil(sub, "subscription should not be nil")
     assert.is_table(members, "members snapshot should be a table")
@@ -17,7 +18,7 @@ local function main()
     assert.not_nil(ch, "channel should not be nil")
 
     -- join the group - should trigger a join event
-    local ok, err2 = pg.join(group)
+    local ok, err2 = scope:join(group)
     assert.no_error(ok, err2, "pg.join should succeed")
 
     -- wait for join event
@@ -35,7 +36,7 @@ local function main()
     assert.eq(evt.path, group, "event path should be the group name")
 
     -- leave the group - should trigger a leave event
-    pg.leave(group)
+    scope:leave(group)
 
     timeout = time.after("3s")
     result = channel.select{

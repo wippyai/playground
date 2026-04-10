@@ -1,6 +1,7 @@
--- Test: pg.monitor() only receives events for the monitored group
+-- Test: scope:monitor() only receives events for the monitored group
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
@@ -8,18 +9,18 @@ local function main()
     local other_group = "test.monitor_filter.other"
 
     -- monitor only the target group
-    local sub, members, err = pg.monitor(target_group)
+    local sub, members, err = scope:monitor(target_group)
     assert.no_error(sub, err, "pg.monitor should succeed")
     assert.is_table(members, "members should be a table")
 
     local ch = sub:channel()
 
     -- join the OTHER group first (should NOT trigger an event on our monitor)
-    local ok, err2 = pg.join(other_group)
+    local ok, err2 = scope:join(other_group)
     assert.no_error(ok, err2, "join other group")
 
     -- join the TARGET group (should trigger an event)
-    ok, err2 = pg.join(target_group)
+    ok, err2 = scope:join(target_group)
     assert.no_error(ok, err2, "join target group")
 
     -- we should receive an event for the target group only
@@ -35,8 +36,8 @@ local function main()
     assert.eq(evt.kind, "member.joined", "should be a join event")
 
     -- leave both groups
-    pg.leave(target_group)
-    pg.leave(other_group)
+    scope:leave(target_group)
+    scope:leave(other_group)
 
     -- we should receive a leave event for target only
     timeout = time.after("3s")

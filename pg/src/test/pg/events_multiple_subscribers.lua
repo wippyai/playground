@@ -1,23 +1,24 @@
--- Test: two concurrent pg.events() subscriptions both receive events
+-- Test: two concurrent scope:events() subscriptions both receive events
 -- Verifies that multiple subscribers to pg events all get notified independently.
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
     local group = "test.events_multi_sub"
 
     -- create two subscriptions
-    local sub1, groups1, err1 = pg.events()
+    local sub1, groups1, err1 = scope:events()
     assert.no_error(sub1, err1, "first pg.events should succeed")
     local ch1 = sub1:channel()
 
-    local sub2, groups2, err2 = pg.events()
+    local sub2, groups2, err2 = scope:events()
     assert.no_error(sub2, err2, "second pg.events should succeed")
     local ch2 = sub2:channel()
 
     -- join a group
-    local ok, jerr = pg.join(group)
+    local ok, jerr = scope:join(group)
     assert.no_error(ok, jerr, "pg.join should succeed")
 
     -- both channels should receive the join event
@@ -40,7 +41,7 @@ local function main()
     assert.eq(r2.value.data.Group, group, "sub2 event group should match")
 
     -- leave the group
-    pg.leave(group)
+    scope:leave(group)
 
     -- both should receive the leave event
     timeout = time.after("3s")

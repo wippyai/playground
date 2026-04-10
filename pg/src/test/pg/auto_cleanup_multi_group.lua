@@ -2,6 +2,7 @@
 -- Erlang PG: when a process exits, all its group memberships are cleaned up
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
@@ -38,7 +39,7 @@ local function main()
 
     -- verify worker is a member of all three groups
     for _, g in ipairs(groups) do
-        local members, merr = pg.get_members(g)
+        local members, merr = scope:get_members(g)
         assert.no_error(members, merr, "get_members " .. g)
         assert.gte(#members, 1, g .. " should have at least 1 member while worker alive")
     end
@@ -56,7 +57,7 @@ local function main()
 
     -- verify worker was auto-removed from ALL groups
     for _, g in ipairs(groups) do
-        local members, merr = pg.get_members(g)
+        local members, merr = scope:get_members(g)
         assert.no_error(members, merr, "get_members " .. g .. " after exit")
         assert.eq(#members, 0, g .. " should be empty after worker exited")
     end

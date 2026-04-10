@@ -1,6 +1,7 @@
 -- Worker: joins multiple groups and then exits after a short delay.
 -- Used by auto_cleanup_multi_group test to verify all memberships are removed on exit.
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
@@ -12,7 +13,7 @@ local function main()
 
     -- join all specified groups
     for _, g in ipairs(groups) do
-        pg.join(g)
+        scope:join(g)
     end
 
     -- signal ready

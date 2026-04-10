@@ -1,13 +1,14 @@
--- Test: pg.events() receives events when a worker process joins then exits
+-- Test: scope:events() receives events when a worker process joins then exits
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
     local group = "test.events_worker_exit"
 
     -- subscribe to pg events BEFORE spawning the worker
-    local sub, groups, err = pg.events()
+    local sub, groups, err = scope:events()
     assert.no_error(sub, err, "pg.events should succeed")
 
     local ch = sub:channel()

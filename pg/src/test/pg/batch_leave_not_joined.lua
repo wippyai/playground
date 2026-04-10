@@ -1,6 +1,7 @@
 -- Test: batch leave when not joined to any group returns error
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 
 local function main()
     local groups = {
@@ -10,7 +11,7 @@ local function main()
     }
 
     -- process is not in any of these groups
-    local ok, err = pg.leave(groups)
+    local ok, err = scope:leave(groups)
     assert.has_error(ok, err, "batch leave should fail when not in any group")
 end
 

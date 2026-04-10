@@ -1,22 +1,23 @@
--- Test: after pg.monitor():close(), no more events are received
+-- Test: after scope:monitor():close(), no more events are received
 -- Verifies that demonitor/unsubscribe is synchronous: once close() returns,
 -- subsequent join/leave operations do NOT deliver events to the closed subscription.
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
     local group = "test.demonitor_no_events"
 
     -- subscribe to monitor for this group
-    local sub, members, err = pg.monitor(group)
+    local sub, members, err = scope:monitor(group)
     assert.no_error(sub, err, "pg.monitor should succeed")
     assert.eq(#members, 0, "initial members should be empty")
 
     local ch = sub:channel()
 
     -- join the group to verify monitor works
-    local ok, err2 = pg.join(group)
+    local ok, err2 = scope:join(group)
     assert.no_error(ok, err2, "pg.join should succeed")
 
     -- receive the join event
@@ -29,7 +30,7 @@ local function main()
     assert.eq(result.value.kind, "member.joined", "should be join event")
 
     -- leave the group first, then close the subscription
-    pg.leave(group)
+    scope:leave(group)
 
     -- consume the leave event
     timeout = time.after("3s")
@@ -43,8 +44,8 @@ local function main()
     sub:close()
 
     -- join and leave again AFTER close
-    pg.join(group)
-    pg.leave(group)
+    scope:join(group)
+    scope:leave(group)
 
     -- small delay to allow any in-flight events
     time.sleep("200ms")

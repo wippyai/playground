@@ -1,6 +1,7 @@
 -- Worker: joins a group, listens for a broadcast, reports payload back.
 -- Used by broadcast_multi_payload and broadcast_no_payload tests.
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
@@ -11,7 +12,7 @@ local function main()
     local parent_pid = setup_msg.parent_pid
 
     -- join the group
-    pg.join(group)
+    scope:join(group)
 
     -- signal ready
     process.send(parent_pid, "ready", true)
@@ -37,7 +38,7 @@ local function main()
         })
     end
 
-    pg.leave(group)
+    scope:leave(group)
 end
 
 return { main = main }

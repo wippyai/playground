@@ -2,31 +2,32 @@
 -- Erlang PG requires a valid group name (atom/term). We require non-empty string.
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 
 local function main()
-    -- pg.join("") should error
-    local ok, err = pg.join("")
-    assert.has_error(ok, err, "pg.join('') should return error")
+    -- scope:join("") should error
+    local ok, err = scope:join("")
+    assert.has_error(ok, err, "scope:join('') should return error")
 
-    -- pg.leave("") should error
-    ok, err = pg.leave("")
-    assert.has_error(ok, err, "pg.leave('') should return error")
+    -- scope:leave("") should error
+    ok, err = scope:leave("")
+    assert.has_error(ok, err, "scope:leave('') should return error")
 
-    -- pg.get_members("") should error
-    ok, err = pg.get_members("")
-    assert.has_error(ok, err, "pg.get_members('') should return error")
+    -- scope:get_members("") should error
+    ok, err = scope:get_members("")
+    assert.has_error(ok, err, "scope:get_members('') should return error")
 
-    -- pg.get_local_members("") should error
-    ok, err = pg.get_local_members("")
-    assert.has_error(ok, err, "pg.get_local_members('') should return error")
+    -- scope:get_local_members("") should error
+    ok, err = scope:get_local_members("")
+    assert.has_error(ok, err, "scope:get_local_members('') should return error")
 
-    -- pg.broadcast("", "topic", "data") should error
-    ok, err = pg.broadcast("", "topic", "data")
-    assert.has_error(ok, err, "pg.broadcast('') should return error")
+    -- scope:broadcast("", "topic", "data") should error
+    ok, err = scope:broadcast("", "topic", "data")
+    assert.has_error(ok, err, "scope:broadcast('') should return error")
 
-    -- pg.broadcast_local("", "topic", "data") should error
-    ok, err = pg.broadcast_local("", "topic", "data")
-    assert.has_error(ok, err, "pg.broadcast_local('') should return error")
+    -- scope:broadcast_local("", "topic", "data") should error
+    ok, err = scope:broadcast_local("", "topic", "data")
+    assert.has_error(ok, err, "scope:broadcast_local('') should return error")
 end
 
 return { main = main }

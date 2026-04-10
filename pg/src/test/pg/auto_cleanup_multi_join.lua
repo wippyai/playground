@@ -2,6 +2,7 @@
 -- All N membership entries should be cleaned up, not just one.
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
@@ -35,7 +36,7 @@ local function main()
     assert.neq(result.channel, timeout, "worker should signal ready")
 
     -- verify the worker appears N times in get_members
-    local members, merr = pg.get_members(group)
+    local members, merr = scope:get_members(group)
     assert.no_error(members, merr, "get_members should succeed")
     assert.eq(#members, join_count, "worker should appear " .. join_count .. " times")
 
@@ -51,7 +52,7 @@ local function main()
     time.sleep("300ms")
 
     -- ALL membership entries should be removed
-    members, merr = pg.get_members(group)
+    members, merr = scope:get_members(group)
     assert.no_error(members, merr, "get_members after exit should succeed")
     assert.eq(#members, 0,
         "group should be empty after multi-joined worker exited, got " .. #members)

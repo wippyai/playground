@@ -1,19 +1,20 @@
--- Test: pg.events() delivers member.left event on leave
+-- Test: scope:events() delivers member.left event on leave
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
     local group = "test.events_leave"
 
     -- subscribe to pg events
-    local sub, groups, err = pg.events()
+    local sub, groups, err = scope:events()
     assert.no_error(sub, err, "pg.events should succeed")
 
     local ch = sub:channel()
 
     -- join a group
-    local ok, err2 = pg.join(group)
+    local ok, err2 = scope:join(group)
     assert.no_error(ok, err2, "pg.join should succeed")
 
     -- consume the join event
@@ -26,7 +27,7 @@ local function main()
     assert.eq(result.value.kind, "member.joined", "first event should be member.joined")
 
     -- now leave the group
-    ok, err2 = pg.leave(group)
+    ok, err2 = scope:leave(group)
     assert.no_error(ok, err2, "pg.leave should succeed")
 
     -- wait for leave event

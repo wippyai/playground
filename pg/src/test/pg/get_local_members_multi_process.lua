@@ -2,6 +2,7 @@
 -- Verifies that when multiple local processes join, get_local_members returns them all.
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
@@ -42,12 +43,12 @@ local function main()
     end
 
     -- get_local_members should return all 3
-    local members, err = pg.get_local_members(group)
+    local members, err = scope:get_local_members(group)
     assert.no_error(members, err, "get_local_members should succeed")
     assert.eq(#members, 3, "get_local_members should return 3 local members")
 
     -- get_members should also return all 3 (all are local)
-    members, err = pg.get_members(group)
+    members, err = scope:get_members(group)
     assert.no_error(members, err, "get_members should succeed")
     assert.eq(#members, 3, "get_members should also return 3 members")
 

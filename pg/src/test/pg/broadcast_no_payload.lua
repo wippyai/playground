@@ -1,20 +1,21 @@
 -- Test: broadcast with no extra payload data (just group + topic)
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
     local group = "test.broadcast_no_payload"
 
     -- join the group ourselves
-    local ok, err = pg.join(group)
+    local ok, err = scope:join(group)
     assert.no_error(ok, err, "pg.join should succeed")
 
     -- listen for broadcast
     local bcast_ch = process.listen("pg.no.payload", { message = true })
 
     -- broadcast with no payload args (only group and topic)
-    ok, err = pg.broadcast(group, "pg.no.payload")
+    ok, err = scope:broadcast(group, "pg.no.payload")
     assert.no_error(ok, err, "broadcast with no payload should succeed")
 
     -- we should still receive the message (though payload may be nil)
@@ -27,7 +28,7 @@ local function main()
     assert.not_nil(result.value, "message should not be nil")
 
     -- cleanup
-    pg.leave(group)
+    scope:leave(group)
 end
 
 return { main = main }

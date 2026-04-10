@@ -1,13 +1,14 @@
--- Test: pg.events() delivers member.joined event on self-join
+-- Test: scope:events() delivers member.joined event on self-join
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
     local group = "test.events_basic"
 
     -- subscribe to pg events
-    local sub, groups, err = pg.events()
+    local sub, groups, err = scope:events()
     assert.no_error(sub, err, "pg.events should succeed")
     assert.not_nil(sub, "subscription should not be nil")
 
@@ -15,7 +16,7 @@ local function main()
     assert.not_nil(ch, "channel should not be nil")
 
     -- join a group (this should emit a member.joined event)
-    local ok, err2 = pg.join(group)
+    local ok, err2 = scope:join(group)
     assert.no_error(ok, err2, "pg.join should succeed")
 
     -- wait for event with timeout
@@ -36,7 +37,7 @@ local function main()
     assert.not_nil(evt.data.PIDs, "event data.PIDs should not be nil")
 
     -- cleanup
-    pg.leave(group)
+    scope:leave(group)
     sub:close()
 end
 

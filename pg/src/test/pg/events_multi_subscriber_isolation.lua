@@ -2,6 +2,7 @@
 -- Subscribe twice, close one, verify the other still receives events.
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
@@ -9,16 +10,16 @@ local function main()
     local group2 = "test.evt_iso_2"
 
     -- create two subscriptions
-    local sub1, _, err1 = pg.events()
+    local sub1, _, err1 = scope:events()
     assert.no_error(sub1, err1, "first pg.events should succeed")
     local ch1 = sub1:channel()
 
-    local sub2, _, err2 = pg.events()
+    local sub2, _, err2 = scope:events()
     assert.no_error(sub2, err2, "second pg.events should succeed")
     local ch2 = sub2:channel()
 
     -- join the first group
-    local ok, jerr = pg.join(group1)
+    local ok, jerr = scope:join(group1)
     assert.no_error(ok, jerr, "pg.join group1 should succeed")
 
     -- both channels should receive the join event
@@ -40,7 +41,7 @@ local function main()
     sub1:close()
 
     -- join a second group
-    ok, jerr = pg.join(group2)
+    ok, jerr = scope:join(group2)
     assert.no_error(ok, jerr, "pg.join group2 should succeed")
 
     -- sub2 should still receive the event
@@ -62,8 +63,8 @@ local function main()
 
     -- cleanup
     sub2:close()
-    pg.leave(group1)
-    pg.leave(group2)
+    scope:leave(group1)
+    scope:leave(group2)
 end
 
 return { main = main }

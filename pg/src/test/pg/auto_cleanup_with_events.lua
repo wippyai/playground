@@ -1,14 +1,15 @@
--- Test: auto-cleanup emits join and leave events via pg.events()
+-- Test: auto-cleanup emits join and leave events via scope:events()
 -- Spawns a cleanup_worker, observes join event, then worker exits and leave event fires.
 local assert = require("assert")
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
     local group = "test.auto_evt"
 
     -- subscribe to pg events BEFORE spawning worker
-    local sub, _, serr = pg.events()
+    local sub, _, serr = scope:events()
     assert.no_error(sub, serr, "pg.events should succeed")
     local ch = sub:channel()
 

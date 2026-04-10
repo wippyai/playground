@@ -1,6 +1,7 @@
 -- Worker: joins a group and then exits after a short delay.
 -- Used by auto_cleanup test to verify automatic group removal on process exit.
 local pg = require("pg")
+local scope = pg.open("app:pg")
 local time = require("time")
 
 local function main()
@@ -12,7 +13,7 @@ local function main()
     local parent_pid = setup_msg.parent_pid
 
     -- join the group
-    pg.join(group)
+    scope:join(group)
 
     -- signal to parent that we joined
     process.send(parent_pid, "ready", true)
