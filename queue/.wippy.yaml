@@ -1,0 +1,13 @@
+version: "1.0"
+
+logger:
+  mode: development
+  level: debug
+  encoding: console
+
+relay:
+  node_name: queue-example
+
+lua:
+  proto_cache_size: 1000
+  main_cache_size: 500

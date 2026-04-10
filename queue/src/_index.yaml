@@ -1,0 +1,67 @@
+version: "1.0"
+namespace: app
+
+entries:
+  # app:terminal - terminal host for CLI commands
+  - name: terminal
+    kind: terminal.host
+    hide_logs: false
+    lifecycle:
+      auto_start: true
+
+  # app:processes - process host for spawning workers
+  - name: processes
+    kind: process.host
+    host:
+      max_processes: 100
+      workers: 8
+    lifecycle:
+      auto_start: true
+
+  # app:mem_driver - in-memory queue driver
+  - name: mem_driver
+    kind: queue.driver.memory
+    lifecycle:
+      auto_start: true
+
+  # app:tasks - queue declaration using the memory driver
+  - name: tasks
+    kind: queue.queue
+    driver: app:mem_driver
+    options:
+      durable: "false"
+
+  # app:task_handler - Lua function invoked for each consumed message
+  - name: task_handler
+    kind: function.lua
+    source: file://handler.lua
+    method: handle
+    modules:
+      - queue
+      - logger
+
+  # app:task_consumer - consumes from app:tasks, calls app:task_handler
+  - name: task_consumer
+    kind: queue.consumer
+    queue: app:tasks
+    func: app:task_handler
+    concurrency: 1
+    prefetch: 10
+    lifecycle:
+      auto_start: true
+
+  # app:test_runner - runs all queue tests
+  - name: test_runner
+    kind: process.lua
+    meta:
+      command:
+        name: test
+        short: Run queue checklist tests
+    source: file://runner.lua
+    method: main
+    modules:
+      - io
+      - registry
+      - funcs
+      - time
+      - queue

@@ -23,3 +23,4 @@ go build -o dist/wippy ./cmd/wippy
 | Directory | Description |
 |-----------|-------------|
 | `pg/`     | Erlang-style distributed process groups (`pg` module) |
+| `queue/`  | Message queue publish/consume with in-memory driver (`queue` module) |
