@@ -2,7 +2,9 @@ version: "1.0"
 namespace: app.test.queue
 
 entries:
-  # --- test cases ---
+  # =============================================
+  # Publish-side tests (no consumer verification)
+  # =============================================
 
   - name: publish_basic
     kind: function.lua
@@ -46,16 +48,514 @@ entries:
     modules:
       - queue
 
+  - name: publish_string_data
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "publish a plain string as message data"
+      order: 4
+    source: file://publish_string_data.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+
+  - name: publish_number_data
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "publish a number as message data"
+      order: 5
+    source: file://publish_number_data.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+
+  - name: publish_boolean_data
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "publish a boolean as message data"
+      order: 6
+    source: file://publish_boolean_data.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+
+  - name: publish_nested_table
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "publish deeply nested table data"
+      order: 7
+    source: file://publish_nested_table.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+
+  - name: publish_large_payload
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "publish a message with a large payload (100 items)"
+      order: 8
+    source: file://publish_large_payload.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+
+  - name: publish_mixed_types
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "publish data with mixed value types"
+      order: 9
+    source: file://publish_mixed_types.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+
+  - name: publish_array_data
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "publish array-style table data"
+      order: 10
+    source: file://publish_array_data.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+
+  - name: publish_special_chars
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "publish data with special characters and unicode"
+      order: 11
+    source: file://publish_special_chars.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+
+  - name: publish_long_string
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "publish a message with a 10KB string payload"
+      order: 12
+    source: file://publish_long_string.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+
+  - name: publish_edge_numbers
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "publish with zero, negative, and large numeric values"
+      order: 13
+    source: file://publish_edge_numbers.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+
+  # =============================================
+  # Header-specific tests
+  # =============================================
+
+  - name: publish_header_types
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "publish with all header types (string, int, float, bool)"
+      order: 14
+    source: file://publish_header_types.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+
+  - name: publish_empty_headers
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "publish with an empty headers table"
+      order: 15
+    source: file://publish_empty_headers.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+
+  - name: publish_many_headers
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "publish with 20+ custom headers"
+      order: 16
+    source: file://publish_many_headers.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+
+  - name: publish_special_header_values
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "publish headers with special characters in values"
+      order: 17
+    source: file://publish_special_header_values.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+
+  # =============================================
+  # Error handling tests
+  # =============================================
+
   - name: publish_invalid_queue
     kind: function.lua
     meta:
       type: test
       suite: queue
       description: "publish to non-existent queue returns error"
-      order: 4
+      order: 18
     source: file://publish_invalid_queue.lua
     method: main
     imports:
       assert: app.lib:assert
     modules:
       - queue
+
+  - name: publish_empty_table
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "publish empty table data returns error"
+      order: 19
+    source: file://publish_empty_table.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+
+  - name: publish_no_data
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "publish with no data argument returns error"
+      order: 20
+    source: file://publish_no_data.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+
+  - name: publish_empty_queue_id
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "publish to empty queue ID returns error"
+      order: 21
+    source: file://publish_empty_queue_id.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+
+  - name: publish_return_values
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "publish returns consistent (ok, err) two-value pair"
+      order: 22
+    source: file://publish_return_values.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+
+  - name: publish_error_info
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "error object has kind, message, and retryable methods"
+      order: 23
+    source: file://publish_error_info.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+
+  # =============================================
+  # Throughput tests
+  # =============================================
+
+  - name: publish_rapid
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "rapid sequential publish of 20 messages"
+      order: 24
+    source: file://publish_rapid.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+
+  - name: publish_throughput
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "publish 50 messages with 100-byte payloads"
+      order: 25
+    source: file://publish_throughput.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+
+  # =============================================
+  # Multi-queue tests
+  # =============================================
+
+  - name: publish_multi_queue
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "publish to two different queues in sequence"
+      order: 26
+    source: file://publish_multi_queue.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+
+  # =============================================
+  # Consumer-side tests (verify message receipt)
+  # =============================================
+
+  - name: consumer_msg_id
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "consumer receives message with non-empty ID"
+      order: 27
+    source: file://consumer_msg_id.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+      - process
+      - time
+      - channel
+
+  - name: consumer_headers
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "consumer receives message headers via msg:headers()"
+      order: 28
+    source: file://consumer_headers.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+      - process
+      - time
+      - channel
+
+  - name: consumer_header_lookup
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "consumer reads individual headers via msg:header(key)"
+      order: 29
+    source: file://consumer_header_lookup.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+      - process
+      - time
+      - channel
+
+  - name: consumer_multiple
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "consumer receives multiple messages in sequence"
+      order: 30
+    source: file://consumer_multiple.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+      - process
+      - time
+      - channel
+
+  - name: consumer_bool_headers
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "consumer receives boolean header values"
+      order: 31
+    source: file://consumer_bool_headers.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+      - process
+      - time
+      - channel
+
+  - name: consumer_standard_headers
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "consumer receives all standard queue headers"
+      order: 32
+    source: file://consumer_standard_headers.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+      - process
+      - time
+      - channel
+
+  - name: consumer_empty_headers
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "consumer receives message with minimal headers"
+      order: 33
+    source: file://consumer_empty_headers.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+      - process
+      - time
+      - channel
+
+  - name: consumer_unique_ids
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "each consumed message has a unique ID"
+      order: 34
+    source: file://consumer_unique_ids.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+      - process
+      - time
+      - channel
+
+  - name: consumer_timestamp
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "consumer message has auto-set timestamp header"
+      order: 35
+    source: file://consumer_timestamp.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+      - process
+      - time
+      - channel
+
+  - name: consumer_events_queue
+    kind: function.lua
+    meta:
+      type: test
+      suite: queue
+      description: "consumer on second queue receives messages"
+      order: 36
+    source: file://consumer_events_queue.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - queue
+      - process
+      - time
+      - channel

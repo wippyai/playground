@@ -24,14 +24,32 @@ entries:
     lifecycle:
       auto_start: true
 
-  # app:tasks - queue declaration using the memory driver
+  # ---------- queues ----------
+
+  # app:tasks - primary queue declaration
   - name: tasks
     kind: queue.queue
     driver: app:mem_driver
     options:
       durable: "false"
 
-  # app:task_handler - Lua function invoked for each consumed message
+  # app:events - secondary queue for multi-queue tests
+  - name: events
+    kind: queue.queue
+    driver: app:mem_driver
+    options:
+      durable: "false"
+
+  # app:verify_tasks - queue used by consumer verification tests
+  - name: verify_tasks
+    kind: queue.queue
+    driver: app:mem_driver
+    options:
+      durable: "false"
+
+  # ---------- handlers ----------
+
+  # app:task_handler - simple handler for the tasks queue
   - name: task_handler
     kind: function.lua
     source: file://handler.lua
@@ -39,6 +57,28 @@ entries:
     modules:
       - queue
       - logger
+
+  # app:verify_handler - handler that reports back to test process
+  - name: verify_handler
+    kind: function.lua
+    source: file://verify_handler.lua
+    method: handle
+    modules:
+      - queue
+      - logger
+      - process
+
+  # app:events_handler - handler for the events queue (reuses verify_handler)
+  - name: events_handler
+    kind: function.lua
+    source: file://verify_handler.lua
+    method: handle
+    modules:
+      - queue
+      - logger
+      - process
+
+  # ---------- consumers ----------
 
   # app:task_consumer - consumes from app:tasks, calls app:task_handler
   - name: task_consumer
@@ -49,6 +89,28 @@ entries:
     prefetch: 10
     lifecycle:
       auto_start: true
+
+  # app:verify_consumer - consumes from app:verify_tasks, calls app:verify_handler
+  - name: verify_consumer
+    kind: queue.consumer
+    queue: app:verify_tasks
+    func: app:verify_handler
+    concurrency: 2
+    prefetch: 10
+    lifecycle:
+      auto_start: true
+
+  # app:events_consumer - consumes from app:events, calls app:events_handler
+  - name: events_consumer
+    kind: queue.consumer
+    queue: app:events
+    func: app:events_handler
+    concurrency: 1
+    prefetch: 10
+    lifecycle:
+      auto_start: true
+
+  # ---------- test runner ----------
 
   # app:test_runner - runs all queue tests
   - name: test_runner
