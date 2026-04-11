@@ -1,0 +1,91 @@
+version: "1.0"
+namespace: app.test.cluster
+
+entries:
+  - name: join_replication
+    kind: function.lua
+    meta:
+      type: test
+      suite: cluster
+      description: "cross-node join replication (2 nodes)"
+      order: 1
+    source: file://join_replication.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster
+    modules:
+      - exec
+      - pg
+      - time
+      - channel
+
+  - name: broadcast_cross_node
+    kind: function.lua
+    meta:
+      type: test
+      suite: cluster
+      description: "cross-node broadcast delivery (2 nodes)"
+      order: 2
+    source: file://broadcast_cross_node.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster
+    modules:
+      - exec
+      - pg
+      - time
+      - channel
+
+  - name: events_cross_node
+    kind: function.lua
+    meta:
+      type: test
+      suite: cluster
+      description: "cross-node events (join/leave from remote node)"
+      order: 3
+    source: file://events_cross_node.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster
+    modules:
+      - exec
+      - pg
+      - time
+      - channel
+
+  - name: node_leave_cleanup
+    kind: function.lua
+    meta:
+      type: test
+      suite: cluster
+      description: "remote member cleanup on node departure (2 nodes)"
+      order: 4
+    source: file://node_leave_cleanup.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster
+    modules:
+      - exec
+      - pg
+      - time
+
+  - name: three_node_sync
+    kind: function.lua
+    meta:
+      type: test
+      suite: cluster
+      description: "full state sync across 3 nodes"
+      order: 5
+    source: file://three_node_sync.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster
+    modules:
+      - exec
+      - pg
+      - time

@@ -1,0 +1,41 @@
+version: "1.0"
+namespace: app
+
+entries:
+  # app:terminal - terminal host for CLI commands
+  - name: terminal
+    kind: terminal.host
+    hide_logs: false
+    lifecycle:
+      auto_start: true
+
+  # app:processes - process host for spawning workers
+  - name: processes
+    kind: process.host
+    host:
+      max_processes: 100
+      workers: 8
+    lifecycle:
+      auto_start: true
+
+  # app:pg - process group scope (same ID as node1 for cross-node replication)
+  - name: pg
+    kind: pg.scope
+    lifecycle:
+      auto_start: true
+
+  # app:worker - long-running worker that performs PG operations
+  - name: worker
+    kind: process.lua
+    meta:
+      command:
+        name: worker
+        short: PG cluster worker
+    source: file://worker.lua
+    method: main
+    modules:
+      - io
+      - pg
+      - process
+      - time
+      - channel
