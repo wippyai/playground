@@ -20,7 +20,9 @@ go build -o dist/wippy ./cmd/wippy
 
 ## Examples
 
-| Directory | Description |
-|-----------|-------------|
-| `pg/`     | Erlang-style distributed process groups (`pg` module) |
-| `queue/`  | Message queue publish/consume with in-memory driver (`queue` module) |
+| Directory          | Description |
+|--------------------|-------------|
+| `pg/`              | Erlang-style distributed process groups (`pg` module) |
+| `pg-cluster/`      | Multi-node `pg` cluster example |
+| `queue/`           | Message queue publish/consume with in-memory driver (`queue` module) |
+| `private-module/`  | Minimal private module fixture for CLI e2e tests (publish, add, install) |

@@ -1,0 +1,14 @@
+version: "1.0"
+namespace: my-org.e2e-cli-private
+
+entries:
+  - name: definition
+    kind: ns.definition
+    meta:
+      title: E2E CLI Private Module
+      description: Test module for CLI private module flow
+
+  - name: hello
+    kind: function.lua
+    source: file://hello.lua
+    method: handler

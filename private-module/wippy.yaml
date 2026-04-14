@@ -1,0 +1,9 @@
+organization: my-org
+module: e2e-cli-private
+version: 0.1.0
+description: E2E CLI test module (private)
+license: MIT
+keywords:
+  - test
+  - e2e
+  - private
