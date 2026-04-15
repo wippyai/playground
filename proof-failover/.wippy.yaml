@@ -1,0 +1,31 @@
+version: "1.0"
+
+logger:
+  mode: development
+  level: debug
+  encoding: console
+
+relay:
+  node_name: proof-f-node1
+
+lua:
+  proto_cache_size: 1000
+  main_cache_size: 500
+
+cluster:
+  enabled: true
+  name: node1
+  internode:
+    bind_addr: "127.0.0.1"
+    bind_port: 19990
+    auto_port: false
+  membership:
+    bind_addr: "127.0.0.1"
+    bind_port: 19986
+
+raft:
+  enabled: true
+  bootstrap: true
+  bind_addr: "127.0.0.1"
+  bind_port: 20000
+  auto_port: false

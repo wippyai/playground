@@ -1,0 +1,20 @@
+version: "1.0"
+namespace: app.test.proof
+
+entries:
+  - name: sharded_distribution
+    kind: function.lua
+    meta:
+      type: test
+      suite: proof
+      description: "global registry handles multiple distributed names"
+      order: 1
+    source: file://sharded_distribution.lua
+    method: main
+    modules:
+      - exec
+      - process
+      - time
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster

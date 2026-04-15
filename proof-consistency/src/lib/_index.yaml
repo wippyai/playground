@@ -1,0 +1,13 @@
+version: "1.0"
+namespace: app.lib
+
+entries:
+  - name: assert
+    kind: function.lua
+    source: file://assert.lua
+    method: _module
+
+  - name: cluster
+    kind: function.lua
+    source: file://cluster.lua
+    method: _module

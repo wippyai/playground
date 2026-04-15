@@ -1,0 +1,20 @@
+version: "1.0"
+namespace: app.test.proof
+
+entries:
+  - name: three_node_contention
+    kind: function.lua
+    meta:
+      type: test
+      suite: proof
+      description: "3 nodes simultaneously register same name — exactly 1 wins (Raft linearizability)"
+      order: 1
+    source: file://three_node_contention.lua
+    method: main
+    modules:
+      - exec
+      - process
+      - time
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster

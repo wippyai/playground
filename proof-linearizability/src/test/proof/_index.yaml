@@ -1,0 +1,20 @@
+version: "1.0"
+namespace: app.test.proof
+
+entries:
+  - name: linearizable_operations
+    kind: function.lua
+    meta:
+      type: test
+      suite: proof
+      description: "global registry operations are linearizable"
+      order: 1
+    source: file://linearizable_operations.lua
+    method: main
+    modules:
+      - exec
+      - process
+      - time
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster

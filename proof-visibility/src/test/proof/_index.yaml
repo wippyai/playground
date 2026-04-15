@@ -1,0 +1,20 @@
+version: "1.0"
+namespace: app.test.proof
+
+entries:
+  - name: cross_node_lookup_send
+    kind: function.lua
+    meta:
+      type: test
+      suite: proof
+      description: "name registered on node2 is visible and routable from node1 and node3"
+      order: 1
+    source: file://cross_node_lookup_send.lua
+    method: main
+    modules:
+      - exec
+      - process
+      - time
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster

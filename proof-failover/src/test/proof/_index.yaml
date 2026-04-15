@@ -1,0 +1,20 @@
+version: "1.0"
+namespace: app.test.proof
+
+entries:
+  - name: crash_release_reregister
+    kind: function.lua
+    meta:
+      type: test
+      suite: proof
+      description: "node crash releases global names, another node re-registers (Raft fault tolerance)"
+      order: 1
+    source: file://crash_release_reregister.lua
+    method: main
+    modules:
+      - exec
+      - process
+      - time
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster

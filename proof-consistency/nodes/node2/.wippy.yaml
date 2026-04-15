@@ -1,0 +1,29 @@
+version: "1.0"
+
+logger:
+  mode: development
+  level: debug
+  encoding: console
+
+relay:
+  node_name: proof-c-node2
+
+lua:
+  proto_cache_size: 1000
+  main_cache_size: 500
+
+cluster:
+  enabled: true
+  name: node2
+  internode:
+    bind_addr: "127.0.0.1"
+    auto_port: true
+  membership:
+    bind_addr: "127.0.0.1"
+    bind_port: 0
+    join_addrs: "127.0.0.1:20006"
+
+raft:
+  enabled: true
+  bootstrap: false
+  auto_port: true

@@ -1,0 +1,20 @@
+version: "1.0"
+namespace: app.test.proof
+
+entries:
+  - name: bilateral_conflict_consistent_view
+    kind: function.lua
+    meta:
+      type: test
+      suite: proof
+      description: "bilateral cross-node conflict detection with consistent global view"
+      order: 1
+    source: file://bilateral_conflict_consistent_view.lua
+    method: main
+    modules:
+      - exec
+      - process
+      - time
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster
