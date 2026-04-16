@@ -1,0 +1,258 @@
+version: "1.0"
+namespace: app.test.registry
+
+entries:
+  # --- test cases ---
+
+  - name: basic_register
+    kind: function.lua
+    meta:
+      type: test
+      suite: registry
+      description: "register globally, lookup, unregister, verify gone"
+      order: 1
+    source: file://basic_register.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - process
+
+  - name: constants_exist
+    kind: function.lua
+    meta:
+      type: test
+      suite: registry
+      description: "GLOBAL and LOCAL constants exist as numbers"
+      order: 2
+    source: file://constants_exist.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - process
+
+  - name: idempotent_reregister
+    kind: function.lua
+    meta:
+      type: test
+      suite: registry
+      description: "re-register same name+PID globally succeeds"
+      order: 3
+    source: file://idempotent_reregister.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - process
+
+  - name: conflict_different_process
+    kind: function.lua
+    meta:
+      type: test
+      suite: registry
+      description: "global name conflict from different process"
+      order: 4
+    source: file://conflict_different_process.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - process
+      - time
+      - channel
+
+  - name: auto_release_on_exit
+    kind: function.lua
+    meta:
+      type: test
+      suite: registry
+      description: "global name auto-released on process exit"
+      order: 5
+    source: file://auto_release_on_exit.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - process
+      - time
+      - channel
+
+  - name: send_to_global_name
+    kind: function.lua
+    meta:
+      type: test
+      suite: registry
+      description: "send message to globally registered name"
+      order: 6
+    source: file://send_to_global_name.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - process
+      - time
+      - channel
+
+  - name: lookup_nonexistent
+    kind: function.lua
+    meta:
+      type: test
+      suite: registry
+      description: "lookup nonexistent name returns nil+error"
+      order: 7
+    source: file://lookup_nonexistent.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - process
+
+  - name: unregister_nonexistent
+    kind: function.lua
+    meta:
+      type: test
+      suite: registry
+      description: "unregister nonexistent global name returns false"
+      order: 8
+    source: file://unregister_nonexistent.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - process
+
+  - name: multiple_names_one_process
+    kind: function.lua
+    meta:
+      type: test
+      suite: registry
+      description: "single process registers 3 different global names"
+      order: 9
+    source: file://multiple_names_one_process.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - process
+
+  - name: unique_names_across_processes
+    kind: function.lua
+    meta:
+      type: test
+      suite: registry
+      description: "5 workers each register a unique global name"
+      order: 10
+    source: file://unique_names_across_processes.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - process
+      - time
+      - channel
+
+  - name: register_after_release
+    kind: function.lua
+    meta:
+      type: test
+      suite: registry
+      description: "re-register global name after previous holder exits"
+      order: 11
+    source: file://register_after_release.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - process
+      - time
+      - channel
+
+  - name: rapid_register_unregister
+    kind: function.lua
+    meta:
+      type: test
+      suite: registry
+      description: "register/unregister same name 50x in a loop"
+      order: 12
+    source: file://rapid_register_unregister.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - process
+
+  - name: concurrent_register
+    kind: function.lua
+    meta:
+      type: test
+      suite: registry
+      description: "5 workers race to register same global name"
+      order: 13
+    source: file://concurrent_register.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - process
+      - time
+      - channel
+
+  - name: stress_register
+    kind: function.lua
+    meta:
+      type: test
+      suite: registry
+      description: "register 50 unique global names, verify all, unregister all"
+      order: 14
+    source: file://stress_register.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - process
+
+  - name: local_blocked_by_global
+    kind: function.lua
+    meta:
+      type: test
+      suite: registry
+      description: "local register fails when global name exists"
+      order: 15
+    source: file://local_blocked_by_global.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - process
+
+  # --- worker processes ---
+
+  - name: global_echo_worker
+    kind: process.lua
+    meta:
+      description: Worker that registers globally and echoes messages back
+    source: file://global_echo_worker.lua
+    method: main
+    modules:
+      - process
+      - channel
+      - time
+
+  - name: global_exit_worker
+    kind: process.lua
+    meta:
+      description: Worker that registers globally then immediately exits
+    source: file://global_exit_worker.lua
+    method: main
+    modules:
+      - process
+
+  - name: global_conflict_worker
+    kind: process.lua
+    meta:
+      description: Worker that tries to register globally and reports success or conflict
+    source: file://global_conflict_worker.lua
+    method: main
+    modules:
+      - process

@@ -1,0 +1,18 @@
+version: "1.0"
+
+logger:
+  mode: development
+  level: debug
+  encoding: console
+
+relay:
+  node_name: global-registry-example
+
+lua:
+  proto_cache_size: 1000
+  main_cache_size: 500
+
+raft:
+  enabled: true
+  bootstrap: true
+  auto_port: true

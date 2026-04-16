@@ -1,0 +1,207 @@
+version: "1.0"
+namespace: app.test.cluster
+
+entries:
+  - name: register_cross_node_lookup
+    kind: function.lua
+    meta:
+      type: test
+      suite: cluster
+      description: "cross-node global register and lookup (2 nodes)"
+      order: 1
+    source: file://register_cross_node_lookup.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster
+    modules:
+      - exec
+      - process
+      - time
+
+  - name: register_from_follower
+    kind: function.lua
+    meta:
+      type: test
+      suite: cluster
+      description: "global register from follower node forwarded to leader"
+      order: 2
+    source: file://register_from_follower.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster
+    modules:
+      - exec
+      - process
+      - time
+
+  - name: register_conflict_cross_node
+    kind: function.lua
+    meta:
+      type: test
+      suite: cluster
+      description: "cross-node global name conflict detection"
+      order: 3
+    source: file://register_conflict_cross_node.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster
+    modules:
+      - exec
+      - process
+      - time
+
+  - name: node_leave_cleanup
+    kind: function.lua
+    meta:
+      type: test
+      suite: cluster
+      description: "global names cleaned up on node departure (2 nodes)"
+      order: 4
+    source: file://node_leave_cleanup.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster
+    modules:
+      - exec
+      - process
+      - time
+
+  - name: node_leave_reregister
+    kind: function.lua
+    meta:
+      type: test
+      suite: cluster
+      description: "re-register global name after node departure"
+      order: 5
+    source: file://node_leave_reregister.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster
+    modules:
+      - exec
+      - process
+      - time
+
+  - name: three_node_register
+    kind: function.lua
+    meta:
+      type: test
+      suite: cluster
+      description: "3 nodes each register unique global names"
+      order: 6
+    source: file://three_node_register.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster
+    modules:
+      - exec
+      - process
+      - time
+
+  - name: three_node_concurrent
+    kind: function.lua
+    meta:
+      type: test
+      suite: cluster
+      description: "3 nodes race to register same global name"
+      order: 7
+    source: file://three_node_concurrent.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster
+    modules:
+      - exec
+      - process
+      - time
+
+  - name: auto_release_remote
+    kind: function.lua
+    meta:
+      type: test
+      suite: cluster
+      description: "global name auto-released when remote worker exits"
+      order: 8
+    source: file://auto_release_remote.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster
+    modules:
+      - exec
+      - process
+      - time
+
+  - name: large_scale_register
+    kind: function.lua
+    meta:
+      type: test
+      suite: cluster
+      description: "register 20 global names from remote node"
+      order: 9
+    source: file://large_scale_register.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster
+    modules:
+      - exec
+      - process
+      - time
+
+  - name: send_cross_node
+    kind: function.lua
+    meta:
+      type: test
+      suite: cluster
+      description: "send message to globally registered name cross-node"
+      order: 10
+    source: file://send_cross_node.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster
+    modules:
+      - exec
+      - process
+      - time
+
+  - name: leader_failover
+    kind: function.lua
+    meta:
+      type: test
+      suite: cluster
+      description: "global names survive node restart (leader failover)"
+      order: 11
+    source: file://leader_failover.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster
+    modules:
+      - exec
+      - process
+      - time
+
+  - name: partition_recovery
+    kind: function.lua
+    meta:
+      type: test
+      suite: cluster
+      description: "global name recovery after node rejoin"
+      order: 12
+    source: file://partition_recovery.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster
+    modules:
+      - exec
+      - process
+      - time

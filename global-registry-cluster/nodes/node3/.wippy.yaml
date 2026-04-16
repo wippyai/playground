@@ -1,0 +1,29 @@
+version: "1.0"
+
+logger:
+  mode: development
+  level: info
+  encoding: console
+
+relay:
+  node_name: node3
+
+lua:
+  proto_cache_size: 1000
+  main_cache_size: 500
+
+cluster:
+  enabled: true
+  name: node3
+  internode:
+    bind_addr: "127.0.0.1"
+    auto_port: true
+  membership:
+    bind_addr: "127.0.0.1"
+    bind_port: 0
+    join_addrs: "127.0.0.1:19846"
+
+raft:
+  enabled: true
+  bootstrap: false
+  auto_port: true

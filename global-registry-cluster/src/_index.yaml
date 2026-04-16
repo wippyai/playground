@@ -1,0 +1,41 @@
+version: "1.0"
+namespace: app
+
+entries:
+  # app:terminal - terminal host for CLI commands
+  - name: terminal
+    kind: terminal.host
+    hide_logs: false
+    lifecycle:
+      auto_start: true
+
+  # app:processes - process host for spawning workers
+  - name: processes
+    kind: process.host
+    host:
+      max_processes: 100
+      workers: 8
+    lifecycle:
+      auto_start: true
+
+  # app:exec - native process executor (for launching child wippy instances)
+  - name: exec
+    kind: exec.native
+    default_env:
+      PATH: "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+      HOME: "/tmp"
+
+  # app:test_runner - runs all global registry cluster tests
+  - name: test_runner
+    kind: process.lua
+    meta:
+      command:
+        name: test
+        short: Run global registry cluster integration tests
+    source: file://runner.lua
+    method: main
+    modules:
+      - io
+      - registry
+      - funcs
+      - time

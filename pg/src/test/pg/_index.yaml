@@ -1343,3 +1343,174 @@ entries:
       assert: app.lib:assert
     modules:
       - pg
+
+  # --- batch 4: advanced monitor, events, stress, and multi-scope tests ---
+
+  - name: monitor_close_flush
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "monitor close with {flush=true} drains all buffered events"
+      order: 82
+    source: file://monitor_close_flush.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - time
+      - channel
+
+  - name: monitor_multi_subscriber
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "3 separate monitors on same group all receive join event independently"
+      order: 83
+    source: file://monitor_multi_subscriber.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - time
+      - channel
+
+  - name: events_rapid_join_leave
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "rapidly join/leave same group 10 times, verify at least 10 join and 10 leave events"
+      order: 84
+    source: file://events_rapid_join_leave.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - time
+      - channel
+
+  - name: events_unsubscribe_no_leak
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "after closing events subscription, no events are received"
+      order: 85
+    source: file://events_unsubscribe_no_leak.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - time
+      - channel
+
+  - name: stress_100_groups
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "join 100 groups, verify which_groups returns 100, leave all, verify 0"
+      order: 86
+    source: file://stress_100_groups.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: stress_concurrent_join_leave
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "10 workers rapidly join/leave same group 20 times each, verify 0 members after exit"
+      order: 87
+    source: file://stress_concurrent_join_leave.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
+  - name: multi_scope_isolation
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "two PG scopes (pg and pg_alt) with same group name have isolated members"
+      order: 88
+    source: file://multi_scope_isolation.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+
+  - name: multi_scope_broadcast
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "broadcast in scope1 only delivers to scope1 members, not scope2"
+      order: 89
+    source: file://multi_scope_broadcast.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
+  - name: release_while_joined
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "release scope instance while joined, verify auto-leave on fresh instance"
+      order: 90
+    source: file://release_while_joined.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - time
+
+  - name: broadcast_multi_group_isolation
+    kind: function.lua
+    meta:
+      type: test
+      suite: pg
+      description: "broadcast to room1 does not deliver to room2 listeners"
+      order: 91
+    source: file://broadcast_multi_group_isolation.lua
+    method: main
+    imports:
+      assert: app.lib:assert
+    modules:
+      - pg
+      - process
+      - time
+      - channel
+
+  - name: stress_jl_worker
+    kind: process.lua
+    meta:
+      description: Worker that joins/leaves a group N times then signals done
+    source: file://stress_jl_worker.lua
+    method: main
+    modules:
+      - pg
+      - process
+      - time
