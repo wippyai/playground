@@ -1,0 +1,55 @@
+proof-global-guarantees/
+├── .wippy.yaml                          # Main node config (bootstrap + sharded registry)
+├── README.md                            # Documentation and proof explanation
+├── STRUCTURE.txt                        # This file
+│
+├── nodes/
+│   ├── node2/
+│   │   ├── .wippy.yaml                  # Node2 config (joins cluster)
+│   │   └── src/
+│   │       └── worker.lua               # Worker for node2
+│   └── node3/
+│       ├── .wippy.yaml                  # Node3 config (joins cluster)
+│       └── src/
+│           └── worker.lua               # Worker for node3
+│
+└── src/
+    ├── runner.lua                       # Test discovery and execution
+    ├── lib/
+    │   ├── assert.lua                   # Test assertions
+    │   └── cluster.lua                  # Cluster management helpers
+    └── test/
+        └── proof/
+            ├── _index.yaml                # Test index
+            │
+            ├── ultimate_global_guarantee.lua  (PRIMARY TEST)
+            │   # Proves: register(name, GLOBAL) guarantees single ownership
+            │   # 3 nodes race for THE_ONE_NAME
+            │   # Exactly 1 winner via distributed sharded 2PC
+            │
+            ├── global_uniqueness_cluster.lua
+            │   # Proves: cluster-wide uniqueness under contention
+            │
+            ├── sharded_transaction_atomicity.lua
+            │   # Proves: 2PC on Raft provides atomic cross-shard transactions
+            │
+            ├── cross_shard_consistency.lua
+            │   # Proves: sharded registry maintains consistency
+            │
+            ├── contention_resolution.lua
+            │   # Proves: concurrent contention resolves to exactly one winner
+            │
+            └── auto_release_failover.lua
+                # Proves: names auto-release on node failure
+
+ARCHITECTURE VALIDATED:
+  - Sharding: FNV-1a consistent hashing
+  - Consensus: Raft per shard
+  - Cross-shard: 2PC (Two-Phase Commit)
+  - Gossip: Cluster membership and failure detection
+  - Reads: Lock-free via sync.Map + atomics
+
+USAGE:
+  cd proof-global-guarantees
+  wippy run src/runner.lua              # Run all 6 proof tests
+  wippy run src/test/proof/ultimate_global_guarantee.lua  # Run specific test

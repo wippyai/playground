@@ -1,0 +1,37 @@
+version: "1.0"
+
+logger:
+  mode: development
+  level: debug
+  encoding: console
+
+relay:
+  node_name: proof-gg-node1
+
+lua:
+  proto_cache_size: 1000
+  main_cache_size: 500
+
+cluster:
+  enabled: true
+  name: proof-gg-node1
+  internode:
+    bind_addr: "127.0.0.1"
+    bind_port: 19750
+    auto_port: false
+  membership:
+    bind_addr: "127.0.0.1"
+    bind_port: 19746
+
+raft:
+  enabled: true
+  bootstrap: true
+  bind_addr: "127.0.0.1"
+  bind_port: 19760
+  auto_port: false
+
+# Sharded registry configuration
+registry:
+  sharded: true
+  shard_count: 8
+  enable_2pc: true

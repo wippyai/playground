@@ -1,0 +1,105 @@
+version: "1.0"
+namespace: app.test.proof
+
+entries:
+  - name: ultimate_global_guarantee
+    kind: function.lua
+    meta:
+      type: test
+      suite: proof
+      description: "PRIMARY PROOF: process.registry.register(name, process.registry.GLOBAL) guarantees single ownership"
+      order: 1
+    source: file://ultimate_global_guarantee.lua
+    method: main
+    modules:
+      - exec
+      - process
+      - time
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster
+
+  - name: global_uniqueness_cluster
+    kind: function.lua
+    meta:
+      type: test
+      suite: proof
+      description: "3 nodes race for same name - exactly 1 wins via distributed sharded 2PC"
+      order: 2
+    source: file://global_uniqueness_cluster.lua
+    method: main
+    modules:
+      - exec
+      - process
+      - time
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster
+
+  - name: sharded_transaction_atomicity
+    kind: function.lua
+    meta:
+      type: test
+      suite: proof
+      description: "2PC on Raft provides atomic cross-shard transactions"
+      order: 3
+    source: file://sharded_transaction_atomicity.lua
+    method: main
+    modules:
+      - exec
+      - process
+      - time
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster
+
+  - name: cross_shard_consistency
+    kind: function.lua
+    meta:
+      type: test
+      suite: proof
+      description: "Sharded registry maintains consistency across shards"
+      order: 4
+    source: file://cross_shard_consistency.lua
+    method: main
+    modules:
+      - exec
+      - process
+      - time
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster
+
+  - name: contention_resolution
+    kind: function.lua
+    meta:
+      type: test
+      suite: proof
+      description: "Concurrent contention resolves to exactly one winner"
+      order: 5
+    source: file://contention_resolution.lua
+    method: main
+    modules:
+      - exec
+      - process
+      - time
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster
+
+  - name: auto_release_failover
+    kind: function.lua
+    meta:
+      type: test
+      suite: proof
+      description: "Names auto-release on node failure for fault tolerance"
+      order: 6
+    source: file://auto_release_failover.lua
+    method: main
+    modules:
+      - exec
+      - process
+      - time
+    imports:
+      assert: app.lib:assert
+      cluster: app.lib:cluster
